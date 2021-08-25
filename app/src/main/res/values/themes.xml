@@ -1,10 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.JabMessenger" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.JMessenger" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorPrimaryVariant">@color/primaryLightColor</item>
+        <item name="colorPrimary">@color/primaryDarkColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColor</item>
         <item name="colorOnPrimary">@color/primaryTextColor</item>
 
         <!-- Secondary brand color. -->
@@ -12,39 +11,20 @@
         <item name="colorSecondaryVariant">@color/secondaryColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
 
+        <item name="colorAccent">@color/secondaryDarkColor</item>
+        <item name="android:colorControlNormal">@color/secondaryDarkColor</item>
+        <item name="android:colorControlActivated">@color/secondaryDarkColor</item>
+        <item name="android:colorControlHighlight">@color/secondaryDarkColor</item>
+
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@color/primaryDarkColor</item>
-        <item name="android:statusBarColor">@color/primaryDarkColor</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primaryDarkColor</item>
+        <item name="android:colorBackground">@color/primaryDarkColor</item>
         <item name="android:textColor">@color/primaryTextColor</item>
 
-    </style>
-
-    <!-- Misc Widget Themes-->
-    <style name="PrimaryButton_Custom">
-        <item name="android:textColor">@color/secondaryTextColor</item>
-        <item name="android:background">@drawable/primary_button</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="GhostButton_Custom">
-        <item name="android:textColor">@color/secondaryTextColor</item>
-        <item name="android:background">@drawable/ghost_button</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="OutlinedTextEdit" parent="Widget.AppCompat.EditText">
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <!-- Full Fragment Themes-->
-    <style name="Theme_SplashScreen" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:windowBackground">@color/primaryDarkColor</item>
-        <item name="android:statusBarColor">@color/primaryDarkColor</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:toolbarStyle">@style/JPrimaryToolBar</item>
+        <item name="android:popupMenuStyle">@style/JToolBarMenu</item>
+        <item name="android:editTextStyle">@style/JTextEdit</item>
+        <item name="android:tabWidgetStyle">@style/JPrimaryTabBar</item>
     </style>
 
 </resources>

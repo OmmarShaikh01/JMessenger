@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JabMessenger.iml" filepath="$PROJECT_DIR$/.idea/modules/JabMessenger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/JabMessenger.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/JabMessenger.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JMessenger.iml" filepath="$PROJECT_DIR$/.idea/modules/JMessenger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/JMessenger.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/JMessenger.app.iml" />
     </modules>
   </component>
 </project>

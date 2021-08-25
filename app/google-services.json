@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1032149189563",
+    "project_id": "jmessenger-c824c",
+    "storage_bucket": "jmessenger-c824c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032149189563:android:94cac1e3100d3cacf0fa9e",
+        "android_client_info": {
+          "package_name": "org.jam.jmessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032149189563-o40sr7plkfa39lbsqunnt46gb3qnrq6t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBBwUB5qQn6RaN89ehQ40lOUM4P0yzDEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032149189563-o40sr7plkfa39lbsqunnt46gb3qnrq6t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

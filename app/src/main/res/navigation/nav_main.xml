@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="org.jam.jmessenger.ui.main.SplashFragment"
+        android:label="splash_fragment"
+        tools:layout="@layout/splash_fragment" >
+        <action
+            android:id="@+id/action_splashFragment_to_startFragment"
+            app:destination="@id/nav_userAuth"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="org.jam.jmessenger.ui.main.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_nav_userAuth"
+            app:destination="@id/nav_userAuth"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingsFragment"
+            app:destination="@id/nav_preferences" />
+        <action
+            android:id="@+id/action_homeFragment_to_chatsHomeFragment"
+            app:destination="@id/chatsHomeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_contactsHomeFragment"
+            app:destination="@id/contactsHomeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_groupsHomeFragment"
+            app:destination="@id/groupsHomeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_placeholder"
+            app:destination="@id/nav_preferences" />
+        <action
+            android:id="@+id/action_homeFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
+    <navigation android:id="@+id/nav_userAuth"
+        app:startDestination="@id/startFragment">
+        <fragment
+            android:id="@+id/startFragment"
+            android:name="org.jam.jmessenger.ui.login.StartFragment"
+            android:label="start_fragment"
+            tools:layout="@layout/start_fragment">
+            <action
+                android:id="@+id/action_startFragment_to_signInFragment"
+                app:destination="@id/signInFragment" />
+            <action
+                android:id="@+id/action_startFragment_to_signUpFragment"
+                app:destination="@id/signUpFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/signInFragment"
+            android:name="org.jam.jmessenger.ui.login.SignInFragment"
+            android:label="sign_in_fragment"
+            tools:layout="@layout/sign_in_fragment">
+            <action
+                android:id="@+id/action_signInFragment_to_homeFragment"
+                app:destination="@id/homeFragment"
+                app:popUpTo="@id/nav_userAuth"
+                app:popUpToInclusive="true" />
+            <action
+                android:id="@+id/action_signInFragment_to_signUpFragment"
+                app:destination="@id/signUpFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/signUpFragment"
+            android:name="org.jam.jmessenger.ui.login.SignUpFragment"
+            android:label="sign_up_fragment"
+            tools:layout="@layout/sign_up_fragment">
+            <action
+                android:id="@+id/action_signUpFragment_to_homeFragment"
+                app:destination="@id/homeFragment"
+                app:popUpTo="@id/nav_userAuth"
+                app:popUpToInclusive="true" />
+            <action
+                android:id="@+id/action_signUpFragment_to_signInFragment"
+                app:destination="@id/signInFragment" />
+        </fragment>
+    </navigation>
+    <fragment
+        android:id="@+id/chatsHomeFragment"
+        android:name="org.jam.jmessenger.ui.chats.ChatsHomeFragment"
+        android:label="chats_home_fragment"
+        tools:layout="@layout/chats_home_fragment" >
+        <action
+            android:id="@+id/action_chatsHomeFragment_to_placeholder2"
+            app:destination="@id/Chat" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactsHomeFragment"
+        android:name="org.jam.jmessenger.ui.contacts.ContactsHomeFragment"
+        android:label="contacts_home_fragment"
+        tools:layout="@layout/contacts_home_fragment" >
+        <action
+            android:id="@+id/action_contactsHomeFragment_to_placeholder2"
+            app:destination="@id/Chat" />
+        <action
+            android:id="@+id/action_contactsHomeFragment_to_placeholder4"
+            app:destination="@id/ContactsInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupsHomeFragment"
+        android:name="org.jam.jmessenger.ui.groups.GroupsHomeFragment"
+        android:label="groups_home_fragment"
+        tools:layout="@layout/groups_home_fragment" >
+        <action
+            android:id="@+id/action_groupsHomeFragment_to_placeholder5"
+            app:destination="@id/GroupChat" />
+    </fragment>
+    <navigation android:id="@+id/nav_preferences"
+        app:startDestination="@id/settingsFragment">
+        <fragment
+            android:id="@+id/settingsFragment"
+            android:name="org.jam.jmessenger.ui.main.SettingsFragment"
+            android:label="SettingsFragment" />
+    </navigation>
+    <fragment android:id="@+id/Chat" >
+        <action
+            android:id="@+id/action_placeholder2_to_placeholder3"
+            app:destination="@id/RecieverInfo" />
+    </fragment>
+    <fragment android:id="@+id/RecieverInfo" />
+    <fragment android:id="@+id/GroupInfo" />
+    <fragment android:id="@+id/ContactsInfo" />
+    <fragment android:id="@+id/GroupChat" >
+        <action
+            android:id="@+id/action_placeholder5_to_placeholder9"
+            app:destination="@id/GroupInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="org.jam.jmessenger.ui.main.UserProfileFragment"
+        android:label="user_profile_fragment"
+        tools:layout="@layout/user_profile_fragment" >
+        <action
+            android:id="@+id/action_userProfileFragment_to_placeholder"
+            app:destination="@id/placeholder" />
+    </fragment>
+    <fragment android:id="@+id/placeholder" />
+</navigation>

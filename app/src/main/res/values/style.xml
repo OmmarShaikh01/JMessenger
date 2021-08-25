@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Text_Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/primaryLightColor</item>
+    </style>
+
+    <style name="Text_Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/primaryLightColor</item>
+    </style>
+
+    <style name="Text_Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/primaryTextColor</item>
+    </style>
+
+    <style name="Text_Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">@color/primaryLightColor</item>
+    </style>
+
+    <style name="JTextEdit" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="android:textColorHint">@color/primaryLightColor</item>
+        <item name="hintTextColor">@color/primaryLightColor</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textAppearance">@style/Text_Subtitle2</item>
+        <item name="boxBackgroundColor">@color/primaryColor</item>
+        <item name="boxStrokeColor">@color/primaryLightColor</item>
+        <item name="boxStrokeWidth">2dp</item>
+    </style>
+
+    <style name="JTextEditHelper" parent="Text_Subtitle2">
+        <item name="android:paddingLeft">8dp</item>
+    </style>
+
+    <style name="JPrimaryButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="backgroundTint">@color/secondaryDarkColor</item>
+    </style>
+
+    <style name="JToolBarMenu" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:background">@color/primaryColor</item>
+        <item name="popupMenuBackground">@color/primaryColor</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="textAppearanceSmallPopupMenu">@style/Text_Subtitle2</item>
+        <item name="textAppearanceLargePopupMenu">@style/Text_Subtitle2</item>
+    </style>
+
+    <style name="JPrimaryToolBar_Text" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/primaryDarkColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="JPrimaryToolBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/primaryColor</item>
+        <item name="android:textColorSecondary">@color/primaryColor</item>
+        <item name="android:background">@color/secondaryColor</item>
+        <item name="popupTheme">@style/JToolBarMenu</item>
+        <item name="titleTextAppearance">@style/JPrimaryToolBar_Text</item>
+    </style>
+
+    <style name="JPrimaryTabBar_Text" parent="TextAppearance.MaterialComponents.Button">
+        <item name="textAllCaps">true</item>
+        <item name="android:textColor">@color/primaryDarkColor</item>
+    </style>
+        
+    <style name="JPrimaryTabBar" parent="Widget.Design.TabLayout">
+        <item name="tabMaxWidth">@dimen/browser_actions_context_menu_max_width</item>
+        <item name="tabTextAppearance">@style/JPrimaryTabBar_Text</item>
+        <item name="tabIndicatorColor">@color/secondaryLightColor</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabPaddingStart">6dp</item>
+        <item name="tabPaddingEnd">6dp</item>
+        <item name="tabBackground">@color/secondaryColor</item>
+    </style>
+
+    <style name="JPreferenceScreen" parent="Theme.MaterialComponents">
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/primaryLightColor</item>
+        <item name="android:windowBackground">@color/primaryDarkColor</item>
+
+        <item name="preferenceScreenStyle">@style/PreferenceHeader</item>
+        <item name="preferenceCategoryStyle">@style/PreferenceHeader</item>
+    </style>
+
+    <style name="PreferenceHeader" parent="Preference.Category">
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/primaryLightColor</item>
+        <item name="android:windowBackground">@color/primaryDarkColor</item>
+    </style>
+
+
+</resources>
