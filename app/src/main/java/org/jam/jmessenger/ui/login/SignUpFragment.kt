@@ -58,7 +58,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                 .addOnSuccessListener(requireActivity()) { result ->
                     user.info.uid = auth.currentUser!!.uid
                     user.info.name = name!!
-                    user.info.email = email!!
+                    user.info.email = email
 
                     repository.createNewUser(user)
                     onSuccessHandlerSignUp(result)

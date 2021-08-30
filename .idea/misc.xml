@@ -6,22 +6,26 @@
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.240625" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable-v24/jmessenger_launcher_foreground.xml" value="0.17777777777777778" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/ic_launcher_background.xml" value="0.17407407407407408" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/ic_search_black_24dp.xml" value="0.24166666666666667" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/jabmessenger_appicon.xml" value="0.2520833333333333" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/jmessenger_icon.xml" value="0.17777777777777778" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/uprofile_icon.xml" value="0.24166666666666667" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/chats_home_fragment.xml" value="0.2359375" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/contacts_home_fragment.xml" value="0.2359375" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/fragment_start.xml" value="0.17708333333333334" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/groups_home_fragment.xml" value="0.2359375" />
-        <entry key="..\:/dev/JMessenger/app/src/main/res/layout/home_fragment.xml" value="0.5" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/layout/home_fragment.xml" value="0.33" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/sign_in_fragment.xml" value="0.23541666666666666" />
-        <entry key="..\:/dev/JMessenger/app/src/main/res/layout/sign_up_fragment.xml" value="0.23541666666666666" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/layout/sign_up_fragment.xml" value="0.33" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/splash_fragment.xml" value="0.25" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/start_fragment.xml" value="0.23541666666666666" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/user_profile_fragment.xml" value="0.33" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/menu/menu_home.xml" value="0.33" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/mipmap-anydpi-v26/jmessenger_launcher.xml" value="0.12407407407407407" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/mipmap-anydpi-v26/jmessenger_launcher_round.xml" value="0.12407407407407407" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/mipmap-anydpi-v26/user_profileDefault.xml" value="0.21388888888888888" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/mipmap-anydpi-v26/user_profileDefault_round.xml" value="0.21388888888888888" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/xml/root_preferences.xml" value="0.23541666666666666" />
       </map>
     </option>

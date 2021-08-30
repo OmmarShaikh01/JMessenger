@@ -20,13 +20,7 @@ class ChatsHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        viewModel = ViewModelProvider(this).get(ChatsHomeViewModel::class.java)
         return inflater.inflate(R.layout.chats_home_fragment, container, false)
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ChatsHomeViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
 }

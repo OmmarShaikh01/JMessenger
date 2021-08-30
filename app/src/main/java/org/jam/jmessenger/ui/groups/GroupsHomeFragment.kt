@@ -20,13 +20,7 @@ class GroupsHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        viewModel = ViewModelProvider(this).get(GroupsHomeViewModel::class.java)
         return inflater.inflate(R.layout.groups_home_fragment, container, false)
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(GroupsHomeViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
 }

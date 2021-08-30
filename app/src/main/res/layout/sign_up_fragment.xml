@@ -81,6 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="User Name"
+                android:text=""
                 android:inputType="textPersonName|text" />
 
             <TextView
@@ -89,6 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingTop="4dp"
                 android:text="Enter User Name" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,6 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingTop="4dp"
                 android:text="Enter User Email" />
 
             <com.google.android.material.textfield.TextInputEditText
@@ -128,6 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingTop="4dp"
                 android:text="Enter User Password" />
 
             <com.google.android.material.textfield.TextInputEditText

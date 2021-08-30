@@ -76,7 +76,8 @@
                 app:popUpToInclusive="true" />
             <action
                 android:id="@+id/action_signInFragment_to_signUpFragment"
-                app:destination="@id/signUpFragment" />
+                app:destination="@id/signUpFragment"
+                app:popUpTo="@id/signUpFragment" />
         </fragment>
         <fragment
             android:id="@+id/signUpFragment"
@@ -90,7 +91,8 @@
                 app:popUpToInclusive="true" />
             <action
                 android:id="@+id/action_signUpFragment_to_signInFragment"
-                app:destination="@id/signInFragment" />
+                app:destination="@id/signInFragment"
+                app:popUpTo="@id/signInFragment" />
         </fragment>
     </navigation>
     <fragment

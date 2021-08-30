@@ -20,13 +20,7 @@ class ContactsHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        viewModel = ViewModelProvider(this).get(ContactsHomeViewModel::class.java)
         return inflater.inflate(R.layout.contacts_home_fragment, container, false)
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ContactsHomeViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
 }

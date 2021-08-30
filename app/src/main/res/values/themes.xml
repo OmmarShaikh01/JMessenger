@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.JMessenger" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.JMessenger" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primaryDarkColor</item>
         <item name="colorPrimaryVariant">@color/primaryColor</item>
@@ -11,20 +11,27 @@
         <item name="colorSecondaryVariant">@color/secondaryColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
 
-        <item name="colorAccent">@color/secondaryDarkColor</item>
-        <item name="android:colorControlNormal">@color/secondaryDarkColor</item>
-        <item name="android:colorControlActivated">@color/secondaryDarkColor</item>
-        <item name="android:colorControlHighlight">@color/secondaryDarkColor</item>
+        <!-- Surface color. -->
+        <item name="colorSurface">@color/primaryDarkColor</item>
+        <item name="colorOnSurface">@color/primaryTextColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="colorControlNormal">@color/primaryDarkColor</item>
+        <item name="colorControlActivated">@color/secondaryColor</item>
+        <item name="colorControlHighlight">@color/secondaryColor</item>
 
-        <!-- Customize your theme here. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/primaryDarkColor</item>
+        <!-- App component Style Declarations-->
         <item name="android:colorBackground">@color/primaryDarkColor</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:colorControlNormal">@color/secondaryColor</item>
+        <item name="android:colorControlHighlight">@color/secondaryColor</item>
+        <item name="android:colorControlActivated">@color/secondaryColor</item>
 
-        <item name="android:toolbarStyle">@style/JPrimaryToolBar</item>
-        <item name="android:popupMenuStyle">@style/JToolBarMenu</item>
-        <item name="android:editTextStyle">@style/JTextEdit</item>
-        <item name="android:tabWidgetStyle">@style/JPrimaryTabBar</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primaryDarkColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+
+        <!-- App widget Style Declarations-->
+        <item name="toolbarStyle">@style/JPrimaryToolBar</item>
+        <item name="tabStyle">@style/JPrimaryTabBar</item>
+        <item name="textInputStyle">@style/JTextEdit</item>
     </style>
 
 </resources>

@@ -45,6 +45,7 @@ class HomeFragment : Fragment() {
             when(item.toString()) {
                 "Logout" -> {
                     Firebase.auth.signOut()
+                    // TODO: Update Last seen
                     menuclick = true
                     navController.navigate(HomeFragmentDirections.actionHomeFragmentToNavUserAuth())
                 }
