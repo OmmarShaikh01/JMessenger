@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.storage.UploadTask
 import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.Profile
 import org.jam.jmessenger.data.db.entity.User
@@ -24,7 +25,6 @@ class UserProfileViewModel(private val uid: String) : DefaultViewModel() {
 
     private val _user = MutableLiveData<User>()
     var user: LiveData<User> = _user
-
     private val _profile = MutableLiveData<Profile>()
     var profile: LiveData<Profile> = _profile
 
@@ -43,13 +43,17 @@ class UserProfileViewModel(private val uid: String) : DefaultViewModel() {
         }
     }
 
+    fun updateUserInfo(user: User) {
+        database_repository.createNewUser(user).addOnSuccessListener {  }
+    }
+
     fun loadUserProfile(uid: String) {
         storage_repository.loadUserProfileImage(uid) { result: Result<Profile> ->
             onResult(_profile, result)
         }
     }
 
-    fun updateUserInfo(user: User) {
-        database_repository.createNewUser(user)
+    fun updateUserProfile(uid: String, profile: Profile): UploadTask {
+        return storage_repository.uploadUserProfileImage(uid, profile)
     }
 }

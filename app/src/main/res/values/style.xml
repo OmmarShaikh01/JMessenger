@@ -34,6 +34,20 @@
         <item name="android:textColor">@color/primaryTextColor</item>
         <item name="backgroundTint">@color/secondaryDarkColor</item>
     </style>
+
+    <style name="JSecondaryButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="backgroundTint">@color/primaryColor</item>
+    </style>
+
+    <style name="JGhostButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/primaryTextColor</item>
+    </style>
+
+    <style name="JDangerButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/errorTextColor</item>
+        <item name="backgroundTint">@color/errorColor</item>
+    </style>
     <!--Button End Region-->
 
 
@@ -70,7 +84,7 @@
 
     <!--JPrimaryToolBar Start Region-->
     <style name="JPrimaryToolBar" parent="Widget.MaterialComponents.Toolbar">
-        <item name="android:background">@color/secondaryColor</item>
+        <item name="android:background">@color/secondaryDarkColor</item>
         <item name="titleTextColor">@color/primaryDarkColor</item>
         <item name="titleTextAppearance">@style/JPrimaryToolBar_Text</item>
     </style>
@@ -86,7 +100,7 @@
         <item name="tabIndicatorHeight">4dp</item>
         <item name="tabPaddingStart">6dp</item>
         <item name="tabPaddingEnd">6dp</item>
-        <item name="tabBackground">@color/secondaryColor</item>
+        <item name="tabBackground">@color/secondaryDarkColor</item>
     </style>
     <!--TextEdit End Region-->
 
@@ -114,15 +128,16 @@
 
     <!--UserProfileFragment Start Region-->
     <style name="UserProfileImageView_back" parent="Theme.MaterialComponents">
-        <item name="android:src">@drawable/ic_user_default_profile</item>
         <item name="android:background">@color/secondaryDarkColor</item>
+        <item name="android:src">@drawable/ic_user_default_profile</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 
     <style name="UserProfileImageView_front" parent="Theme.MaterialComponents">
-        <item name="android:background">@drawable/uprofile_icon</item>
-        <item name="android:src">@drawable/ic_user_default_profile</item>
-        <item name="android:scaleType">centerCrop</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
     </style>
 
     <style name="UserProfileEditButton" parent="Widget.MaterialComponents.Button.OutlinedButton">

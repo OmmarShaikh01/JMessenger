@@ -1,7 +1,6 @@
 package org.jam.jmessenger
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**

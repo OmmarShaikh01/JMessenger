@@ -13,12 +13,15 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.R
-import org.jam.jmessenger.databinding.ContactsHomeFragmentBinding
 import org.jam.jmessenger.databinding.HomeFragmentBinding
 import org.jam.jmessenger.ui.chats.ChatsHomeFragment
 import org.jam.jmessenger.ui.contacts.ContactsHomeFragment
 import org.jam.jmessenger.ui.groups.GroupsHomeFragment
 
+
+/*
+* TODO: last seen of user profile. ad is online of use setter
+* */
 
 /**
  * Home fragment, home fragment for the application

@@ -21,7 +21,6 @@ import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.databinding.SignUpFragmentBinding
-import kotlin.Exception
 
 
 /**
@@ -101,16 +100,16 @@ class SignUpFragment : Fragment(), View.OnClickListener {
 
         when (exception) {
             is FirebaseAuthInvalidCredentialsException -> {
-                bindings.signupTextView4.error = "Invalid Credentials"
-                bindings.signupTextView4.text = "Invalid Credentials"
+                bindings.signupTextView5.error = "Invalid Credentials"
+                bindings.signupTextView5.text = "Invalid Credentials"
             }
             is FirebaseAuthUserCollisionException -> {
                 bindings.signupTextView3.error = "User Already Exists"
                 bindings.signupTextView3.text = "User Already Exists"
             }
             is FirebaseAuthWeakPasswordException -> {
-                bindings.signupTextView4.error = "Minimum Length is 8"
-                bindings.signupTextView4.text = "Minimum Length is 8"
+                bindings.signupTextView5.error = "Minimum Length is 8"
+                bindings.signupTextView5.text = "Minimum Length is 8"
             }
         }
         Toast.makeText(requireContext(), "Authentication Failed", Toast.LENGTH_SHORT).show()

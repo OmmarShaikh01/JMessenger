@@ -9,4 +9,7 @@
     <color name="secondaryLightColor">#eec0db</color>
     <color name="secondaryDarkColor">#b01d6b</color>
     <color name="secondaryTextColor">#fafafa</color>
+
+    <color name="errorColor">#D50000</color>
+    <color name="errorTextColor">#FFEBEE</color>
 </resources>

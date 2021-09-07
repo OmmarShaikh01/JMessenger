@@ -14,10 +14,10 @@
         <!-- Surface color. -->
         <item name="colorSurface">@color/primaryDarkColor</item>
         <item name="colorOnSurface">@color/primaryTextColor</item>
-        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="colorAccent">@color/secondaryLightColor</item>
         <item name="colorControlNormal">@color/primaryDarkColor</item>
-        <item name="colorControlActivated">@color/secondaryColor</item>
-        <item name="colorControlHighlight">@color/secondaryColor</item>
+        <item name="colorControlActivated">@color/secondaryLightColor</item>
+        <item name="colorControlHighlight">@color/secondaryLightColor</item>
 
         <!-- App component Style Declarations-->
         <item name="android:colorBackground">@color/primaryDarkColor</item>

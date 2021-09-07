@@ -2,8 +2,9 @@ package org.jam.jmessenger.data.db.entity
 
 data class User(
     var info: UserInfo = UserInfo(), // user info
-    var friends:  HashMap<String, UserFriend> = HashMap(), // hashmap for friends
-    var groups:  HashMap<String, UserGroup> = HashMap() // hashmap for group
+    var friends: HashMap<String, UserFriend> = HashMap(), // hashmap for friends
+    var groups: HashMap<String, UserGroup> = HashMap(), // hashmap for group
+    var requestedGroups: HashMap<String, UserGroup> = HashMap(),// hashmap for group
 ) {
     override fun toString(): String {
         return "${info.name} ${info.email}"
@@ -20,16 +21,23 @@ data class UserInfo(
 )
 
 data class UserFriend(
-    var uid: String = "" // unique user id given by the authenticator api
+    var uid: String = "", // unique user id given by the authenticator api
+    var name: String = "", // user name
+    var state: FriendState? = null
 )
 
+enum class FriendState {
+    INREQUESTED, OUTREQUESTED, FRIEND, BLOCKED
+}
+
 data class UserGroup(
-    var gid: String = ""  // unique group id given by the authenticator api
+    var gid: String = "", // unique group id given by the authenticator api
+    var name: String = "" // group name
 )
 
 data class Profile(
     var url: String = "",
-    var data: ByteArray = ByteArray(100 * 1024) // defaults to a 100 KB array
+    var data: ByteArray = ByteArray(1000 * 1024) // defaults to a 1000 KB array
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

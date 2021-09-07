@@ -38,9 +38,6 @@
             android:id="@+id/action_homeFragment_to_chatsHomeFragment"
             app:destination="@id/chatsHomeFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_contactsHomeFragment"
-            app:destination="@id/contactsHomeFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_groupsHomeFragment"
             app:destination="@id/groupsHomeFragment" />
         <action
@@ -49,6 +46,12 @@
         <action
             android:id="@+id/action_homeFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_friendSearchFragment"
+            app:destination="@id/friendSearchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_friendProfileFragment"
+            app:destination="@id/friendProfileFragment" />
     </fragment>
     <navigation android:id="@+id/nav_userAuth"
         app:startDestination="@id/startFragment">
@@ -105,18 +108,6 @@
             app:destination="@id/Chat" />
     </fragment>
     <fragment
-        android:id="@+id/contactsHomeFragment"
-        android:name="org.jam.jmessenger.ui.contacts.ContactsHomeFragment"
-        android:label="contacts_home_fragment"
-        tools:layout="@layout/contacts_home_fragment" >
-        <action
-            android:id="@+id/action_contactsHomeFragment_to_placeholder2"
-            app:destination="@id/Chat" />
-        <action
-            android:id="@+id/action_contactsHomeFragment_to_placeholder4"
-            app:destination="@id/ContactsInfo" />
-    </fragment>
-    <fragment
         android:id="@+id/groupsHomeFragment"
         android:name="org.jam.jmessenger.ui.groups.GroupsHomeFragment"
         android:label="groups_home_fragment"
@@ -139,7 +130,6 @@
     </fragment>
     <fragment android:id="@+id/RecieverInfo" />
     <fragment android:id="@+id/GroupInfo" />
-    <fragment android:id="@+id/ContactsInfo" />
     <fragment android:id="@+id/GroupChat" >
         <action
             android:id="@+id/action_placeholder5_to_placeholder9"
@@ -149,10 +139,15 @@
         android:id="@+id/userProfileFragment"
         android:name="org.jam.jmessenger.ui.main.UserProfileFragment"
         android:label="user_profile_fragment"
-        tools:layout="@layout/user_profile_fragment" >
-        <action
-            android:id="@+id/action_userProfileFragment_to_placeholder"
-            app:destination="@id/placeholder" />
-    </fragment>
-    <fragment android:id="@+id/placeholder" />
+        tools:layout="@layout/user_profile_fragment" />
+    <fragment
+        android:id="@+id/friendSearchFragment"
+        android:name="org.jam.jmessenger.ui.contacts.FriendSearchFragment"
+        android:label="friend_search_fragment"
+        tools:layout="@layout/friend_search_fragment" />
+    <fragment
+        android:id="@+id/friendProfileFragment"
+        android:name="org.jam.jmessenger.ui.contacts.FriendProfileFragment"
+        android:label="friend_profile_fragment"
+        tools:layout="@layout/friend_profile_fragment" />
 </navigation>
