@@ -1,8 +1,5 @@
 package org.jam.jmessenger.ui.contacts
 
-import android.util.Log
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +8,6 @@ import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.Profile
 import org.jam.jmessenger.data.db.entity.User
-import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.data.db.repository.StorageRepository
 import org.jam.jmessenger.ui.DefaultViewModel
@@ -35,25 +31,65 @@ class FriendSearchViewModel(private val uid: String) : DefaultViewModel() {
     var friendInfo: LiveData<User> = _friendInfo
     private val _friendProfile = MutableLiveData<Profile>()
     var friendProfile: LiveData<Profile> = _friendProfile
+    private val _friendRequestState = MutableLiveData<FriendState>()
+    var friendRequestState: LiveData<FriendState> = _friendRequestState
     // END REGION
 
-    fun addFriend(): FriendState? {
-        val loadedUser = userInfo.value ?: return null
-        val loadedFriend = friendInfo.value?: return null
+    init {
+        loadUserInfo(uid)
+        // set snapshot listener for the user data
+        database_repository.onUserDataChangeListener(uid) { result: Result<User> ->
+            onResult(_userInfo, result)
+        }
+    }
+
+    fun addFriend() {
+        val loadedUser = userInfo.value ?: return
+        val loadedFriend = friendInfo.value ?: return
         if ((loadedUser.info.uid.isNotEmpty()) and (loadedFriend.info.uid.isNotEmpty())) {
             if (loadedUser.friends.keys.contains(loadedFriend.info.uid)) {
-                val state = loadedUser.friends[loadedFriend.info.uid]!!.state
-                Log.i(TAG, state?.name.toString())
-                return state
+                _friendRequestState.value = loadedUser.friends[loadedFriend.info.uid]!!.state!!
             } else {
-                database_repository.addFriend(loadedUser, loadedFriend).addOnCompleteListener() {
-                    loadUserInfo(loadedUser.info.uid)
+                database_repository.addFriend(loadedUser, loadedFriend).addOnSuccessListener {
+                    _friendRequestState.value = FriendState.OUTREQUESTED
                 }
-                Log.i(TAG, FriendState.OUTREQUESTED.name)
-                return FriendState.OUTREQUESTED
             }
-        } else {
-            return null
+        }
+    }
+
+    fun removeFriend() {
+        val loadedUser = userInfo.value ?: return
+        val loadedFriend = friendInfo.value ?: return
+        if ((loadedUser.info.uid.isNotEmpty()) and (loadedFriend.info.uid.isNotEmpty())) {
+            if (loadedUser.friends.keys.contains(loadedFriend.info.uid)) {
+                database_repository.rejectFriend(loadedUser, loadedFriend).addOnSuccessListener {
+                    _friendRequestState.value = FriendState.UNFRIENDED
+                }
+            }
+        }
+    }
+
+    fun unblockFriend() {
+        val loadedUser = userInfo.value ?: return
+        val loadedFriend = friendInfo.value ?: return
+        if ((loadedUser.info.uid.isNotEmpty()) and (loadedFriend.info.uid.isNotEmpty())) {
+            if (loadedUser.friends.keys.contains(loadedFriend.info.uid)) {
+                database_repository.unblockFriend(loadedUser, loadedFriend).addOnSuccessListener {
+                    _friendRequestState.value = FriendState.ACCEPTED
+                }
+            }
+        }
+    }
+
+    fun acceptFriend() {
+        val loadedUser = userInfo.value ?: return
+        val loadedFriend = friendInfo.value ?: return
+        if ((loadedUser.info.uid.isNotEmpty()) and (loadedFriend.info.uid.isNotEmpty())) {
+            if (loadedUser.friends.keys.contains(loadedFriend.info.uid)) {
+                database_repository.acceptFriend(loadedUser, loadedFriend).addOnSuccessListener {
+                    _friendRequestState.value = FriendState.ACCEPTED
+                }
+            }
         }
     }
 
@@ -73,9 +109,5 @@ class FriendSearchViewModel(private val uid: String) : DefaultViewModel() {
         database_repository.loadUser(uid) { result: Result<User> ->
             onResult(_userInfo, result)
         }
-    }
-
-    companion object{
-        enum class RequestState { PENDING, ALREADY_FRIEND, SENT, FAILED }
     }
 }

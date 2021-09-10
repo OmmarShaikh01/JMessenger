@@ -27,7 +27,7 @@ data class UserFriend(
 )
 
 enum class FriendState {
-    INREQUESTED, OUTREQUESTED, FRIEND, BLOCKED, BLOCKER
+    INREQUESTED, OUTREQUESTED, FRIEND, BLOCKED, BLOCKER, ACCEPTED, UNFRIENDED
 }
 
 data class UserGroup(

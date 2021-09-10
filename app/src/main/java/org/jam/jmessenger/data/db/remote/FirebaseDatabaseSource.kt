@@ -2,6 +2,7 @@ package org.jam.jmessenger.data.db.remote
 
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
@@ -30,7 +31,9 @@ class FirebaseDatabaseSource {
 
 
     // Persist Functions ---------------------------------------------------------------------------
-    // TODO: add on edit update function
+    fun onUserDataChangeListener(uid: String): DocumentReference {
+        return firebaseDatabase.collection("users").document(uid)
+    }
     // END REGION
 
 

@@ -7,9 +7,9 @@ import androidx.test.filters.LargeTest
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -17,7 +17,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.User
-import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.data.db.entity.UserInfo
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -256,31 +255,46 @@ class FirebaseDatabaseSourceTests {
         Tasks.await(database.addFriend(authUser, friendUser))
         var docRef = Tasks.await(database.loadUserFriends(auth.uid!!.toString()))
         val data = docRef.data
-        var loadedUserFriends = docRef!!.toObject<HashMap<String, UserFriend>>()!!
-        assertThat("Friend Loading Failed after addFriend", true)
+        var loadedUserFriends = docRef!!.toObject<User>()!!.friends
+        assertThat(
+            "Friend Loading Failed after addFriend",
+            loadedUserFriends[friendUser.info.uid]!!.state!!.name == FriendState.OUTREQUESTED.name
+        )
 
         // TEST
         Tasks.await(database.acceptFriend(authUser, friendUser))
         docRef = Tasks.await(database.loadUserFriends(auth.uid!!.toString()))
-        loadedUserFriends = docRef!!.toObject<HashMap<String, UserFriend>>()!!
-        assertThat("Friend Loading Failed after acceptFriend", true)
+        loadedUserFriends = docRef!!.toObject<User>()!!.friends
+        assertThat(
+            "Friend Loading Failed after acceptFriend",
+            loadedUserFriends[friendUser.info.uid]!!.state!!.name == FriendState.FRIEND.name
+        )
 
         // TEST
         Tasks.await(database.blockFriend(authUser, friendUser))
         docRef = Tasks.await(database.loadUserFriends(auth.uid!!.toString()))
-        loadedUserFriends = docRef!!.toObject<HashMap<String, UserFriend>>()!!
-        assertThat("Friend Loading Failed after blockFriend", true)
+        loadedUserFriends = docRef!!.toObject<User>()!!.friends
+        assertThat(
+            "Friend Loading Failed after blockFriend",
+            loadedUserFriends[friendUser.info.uid]!!.state!!.name == FriendState.BLOCKED.name
+        )
 
         // TEST
         Tasks.await(database.unblockFriend(authUser, friendUser))
         docRef = Tasks.await(database.loadUserFriends(auth.uid!!.toString()))
-        loadedUserFriends = docRef!!.toObject<HashMap<String, UserFriend>>()!!
-        assertThat("Friend Loading Failed after unblockFriend", true)
+        loadedUserFriends = docRef!!.toObject<User>()!!.friends
+        assertThat(
+            "Friend Loading Failed after unblockFriend",
+            loadedUserFriends[friendUser.info.uid]!!.state!!.name == FriendState.FRIEND.name
+        )
 
         // TEST
         Tasks.await(database.rejectFriend(authUser, friendUser))
         docRef = Tasks.await(database.loadUserFriends(auth.uid!!.toString()))
-        loadedUserFriends = docRef!!.toObject<HashMap<String, UserFriend>>()!!
-        assertThat("Friend Loading Failed after rejectFriend", true)
+        loadedUserFriends = docRef!!.toObject<User>()!!.friends
+        assertThat(
+            "Friend Loading Failed after rejectFriend",
+            !loadedUserFriends.containsKey(friendUser.info.uid)
+        )
     }
 }

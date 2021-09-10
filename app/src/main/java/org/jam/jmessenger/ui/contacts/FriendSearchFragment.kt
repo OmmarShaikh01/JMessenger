@@ -8,10 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,7 +21,6 @@ import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.Profile
 import org.jam.jmessenger.data.db.entity.User
-import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.databinding.FriendSearchFragmentBinding
 import org.jam.jmessenger.ui.hideKeyboard
 
@@ -53,9 +51,67 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
         viewModel.friendProfile.observe(this.viewLifecycleOwner, Observer { data: Profile ->
             updateFriendProfile(data)
         })
+        viewModel.friendRequestState.observe(this.viewLifecycleOwner, Observer { data: FriendState ->
+            raiseToastOnFriendStateChange(data)
+        })
     }
     // END REGION
 
+
+    // START REGION:
+    private fun raiseToastOnFriendStateChange(state: FriendState) {
+        when(state) {
+            FriendState.OUTREQUESTED -> {
+                Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show()
+            }
+            FriendState.INREQUESTED -> {
+                Toast.makeText(requireContext(), "Friend Request Present", Toast.LENGTH_SHORT).show()
+                // TODO: raise a dialogue to accept request
+                activity?.let {
+                    val builder = AlertDialog.Builder(it)
+                    builder.setMessage("Unblock Friend")
+                    builder.setPositiveButton(
+                        "Unblock"
+                    ) { dialog, id ->
+                        viewModel.acceptFriend()
+                    }
+                    builder.setNegativeButton(
+                        "Cancel"
+                    ) { dialog, id -> }
+                    builder.show()
+                } ?: throw IllegalStateException("Activity cannot be null")
+            }
+            FriendState.FRIEND -> {
+                Toast.makeText(requireContext(), "Already Friend", Toast.LENGTH_SHORT).show()
+            }
+            FriendState.BLOCKED -> {
+                // TODO: raise a dialogue to unblock
+                activity?.let {
+                    val builder = AlertDialog.Builder(it)
+                    builder.setMessage("Unblock Friend")
+                    builder.setPositiveButton(
+                        "Unblock"
+                    ) { dialog, id ->
+                        viewModel.unblockFriend()
+                    }
+                    builder.setNegativeButton(
+                        "Cancel"
+                    ) { dialog, id -> }
+                    builder.show()
+                } ?: throw IllegalStateException("Activity cannot be null")
+            }
+            FriendState.BLOCKER -> {
+                Toast.makeText(requireContext(), "Fail To Add Friend", Toast.LENGTH_SHORT).show()
+            }
+            FriendState.ACCEPTED -> {
+                Toast.makeText(requireContext(), "Added As Friend", Toast.LENGTH_SHORT).show()
+            }
+            FriendState.UNFRIENDED -> {
+                Toast.makeText(requireContext(), "Removed Friend", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    // END REGION:
 
     // START REGION: UI updates
     private fun updateFriendInfo(user: User) {
@@ -74,7 +130,7 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
 
     // START REGION: Friends Requests
     private fun removeFriend(uid: String){
-
+        TODO()
     }
 
     private fun searchFriends(email: String){
@@ -86,7 +142,7 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
     // START REGION: UI setup
     private fun setupUI(){
         defaultProfile = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_user_default_profile)!!.toBitmap()
-        viewModel.loadUserInfo(authdUser!!.uid)
+
         // clears ui when the view is created
         bindings.friendSearchTextViewName.text = ""
         bindings.friendSearchTextViewStatus.text = ""
@@ -96,8 +152,8 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
         setHasOptionsMenu(true) // enables the option menu
         val searchItem = bindings.friendSearchToolBar.menu.findItem(R.id.action_searchfriend)
         val searchView = (searchItem.actionView) as SearchView
+        searchView.isSubmitButtonEnabled = true
         searchView.queryHint = "Friend Email"
-        searchView.setOnSearchClickListener(this)
         searchView.setOnQueryTextListener(this)
     }
     // END REGION
@@ -124,23 +180,10 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
     override fun onClick(v: View?) {
         when(v!!) {
             bindings.friendSearchButtonAddFriend -> {
-                when(viewModel.addFriend()) {
-                    FriendState.OUTREQUESTED -> {
-                        Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show()
-                    }
-                    FriendState.INREQUESTED -> {
-                        Toast.makeText(requireContext(), "Requested", Toast.LENGTH_SHORT).show()
-                    }
-                    FriendState.FRIEND -> {
-                        Toast.makeText(requireContext(), "Already Friend", Toast.LENGTH_SHORT).show()
-                    }
-                    FriendState.BLOCKED -> {
-                        Toast.makeText(requireContext(), "User Blocked", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                viewModel.addFriend()
             }
             bindings.friendSearchButtonRemoveFriend -> {
-                TODO()
+                viewModel.removeFriend()
             }
         }
     }
