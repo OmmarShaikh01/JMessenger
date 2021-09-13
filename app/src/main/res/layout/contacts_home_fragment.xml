@@ -25,11 +25,31 @@
         android:id="@+id/contacts_home_RecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/contacts_home_TextView_requestBadge"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@drawable/text_view_badge_positive"
+        android:elevation="7dp"
+        android:gravity="center"
+        android:text="10"
+        android:textColor="@color/primaryDarkColor"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="@+id/contacts_home_FAB_friendRequests"
+        app:layout_constraintEnd_toEndOf="@+id/contacts_home_FAB_friendRequests"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/contacts_home_FAB_friendRequests"
+        app:layout_constraintTop_toTopOf="@+id/contacts_home_FAB_friendRequests"
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

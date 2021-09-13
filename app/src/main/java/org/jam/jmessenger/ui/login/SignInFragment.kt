@@ -30,7 +30,7 @@ import org.jam.jmessenger.databinding.SignInFragmentBinding
 class SignInFragment : Fragment(), View.OnClickListener {
     private lateinit var bindings: SignInFragmentBinding
     private lateinit var navController: NavController
-    private lateinit var auth: FirebaseAuth
+    private var auth = Firebase.auth
 
 
     /**
@@ -116,7 +116,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        auth = Firebase.auth
         bindings = SignInFragmentBinding.inflate(inflater)
         return bindings.root
     }

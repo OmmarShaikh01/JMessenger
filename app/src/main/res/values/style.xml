@@ -48,6 +48,18 @@
         <item name="android:textColor">@color/errorTextColor</item>
         <item name="backgroundTint">@color/errorColor</item>
     </style>
+
+    <style name="JDangerButton_FriendRequests" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/errorTextColor</item>
+        <item name="backgroundTint">@color/errorColor</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
+    <style name="JPrimaryButton_FriendRequests" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="backgroundTint">@color/acceptColor</item>
+        <item name="android:textSize">10dp</item>
+    </style>
     <!--Button End Region-->
 
 

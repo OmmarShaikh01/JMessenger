@@ -141,7 +141,10 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
 
     // START REGION: UI setup
     private fun setupUI(){
-        defaultProfile = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_user_default_profile)!!.toBitmap()
+        defaultProfile = AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.ic_user_default_profile
+        )!!.toBitmap()
 
         // clears ui when the view is created
         bindings.friendSearchTextViewName.text = ""

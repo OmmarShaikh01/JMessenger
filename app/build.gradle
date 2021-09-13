@@ -64,6 +64,9 @@ android {
 dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1-native-mt'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.firebaseui:firebase-ui-firestore:8.0.0'
+    implementation 'com.firebaseui:firebase-ui-storage:8.0.0'
+    implementation 'androidx.paging:paging-runtime:3.1.0-alpha03'
     apply plugin: "androidx.navigation.safeargs.kotlin"
     apply plugin: 'com.android.application'
 

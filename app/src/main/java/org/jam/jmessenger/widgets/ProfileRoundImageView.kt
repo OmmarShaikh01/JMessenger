@@ -10,11 +10,20 @@ import androidx.core.graphics.scale
 import org.jam.jmessenger.R
 
 
+/**
+ * Profile round image view
+ *
+ * @constructor
+ *
+ * @param context
+ * @param attrs
+ */
 class ProfileRoundImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null,
 ) : AppCompatImageView(context, attrs) {
 
-    private val borderWidth = 8f
+    // START REGION: Declarations
+    private val borderWidth = 6f
     private val borderColor = ResourcesCompat.getColor(resources, R.color.secondaryColor, null)
     private val backColor = ResourcesCompat.getColor(resources, R.color.primaryDarkColor, null)
 
@@ -26,10 +35,41 @@ class ProfileRoundImageView @JvmOverloads constructor(
     private val paintBorder = Paint().apply { isAntiAlias = true; color = borderColor}
     private val paintBackground = Paint().apply { isAntiAlias = true; color = backColor }
     private val paintBackgroundMask = Paint().apply { isAntiAlias = true; shader = bitmapShader; style = Paint.Style.FILL}
+    // END REGION
 
 
-    override fun getScaleType(): ScaleType =
-        super.getScaleType() ?: ScaleType.CENTER_CROP
+    // START REGION: DrawMethods
+    /**
+     * Make Circle Bitmap
+     *
+     * @param bitmap: Bitmap
+     * @return Bitmap?
+     */
+    private fun makeCircle(bitmap: Bitmap?): Bitmap? {
+        if (bitmap != null) {
+            val bitmapHeight = bitmap.height
+            val radius = ((bitmapHeight - 14) / 2).toFloat()
+            val center = ((bitmapHeight) / 2).toFloat()
+            val basePaint = Paint().apply {
+                isAntiAlias = true
+                color = Color.WHITE
+                xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+            }
+
+            val baseBitmap = Bitmap.createBitmap(bitmapHeight, bitmapHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(baseBitmap)
+            canvas.drawCircle(center, center, radius, paint) // Draws Base Circle
+            canvas.drawBitmap(bitmap, 0f, 0f, basePaint) // Draws Profile Bitmap Over it
+            return baseBitmap
+        } else {
+            return null
+        }
+    }
+    // END REGION
+
+
+    // START REGION: Overrides
+    override fun getScaleType(): ScaleType = super.getScaleType() ?: ScaleType.CENTER_CROP
 
     override fun setScaleType(scaleType: ScaleType) {
         require(
@@ -44,36 +84,24 @@ class ProfileRoundImageView @JvmOverloads constructor(
         super.setScaleType(scaleType)
     }
 
-    private fun makeCircle(bitmap: Bitmap?): Bitmap? {
-        if (bitmap == null) {
-            return null
-        }
-        val bitmapHeight = bitmap.height
-        val radius = ((bitmapHeight - 14) / 2).toFloat()
-        val center = ((bitmapHeight) / 2).toFloat()
-        val baseBitmap = Bitmap.createBitmap(bitmapHeight, bitmapHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(baseBitmap)
-        val basePaint = Paint().apply { isAntiAlias = true; color = Color.WHITE; xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)}
-        canvas.drawCircle(center, center, radius, paint)
-        canvas.drawBitmap(bitmap, 0f, 0f, basePaint)
-        return baseBitmap
-    }
-
     override fun onDraw(canvas: Canvas) {
-        // super.onDraw(canvas)
         val baseRadius = this.height.toFloat() / 2
-
         // Draw Border
         canvas.drawCircle(baseRadius, baseRadius, baseRadius, paintBorder)
         // Draw Circle background
         canvas.drawCircle(baseRadius, baseRadius, baseRadius - borderWidth, paintBackground)
         // Draws Pixmap
-        canvas.drawBitmap(makeCircle(bitmapDefault.scale((baseRadius * 2).toInt(), (baseRadius * 2).toInt()))!!, 0f, 0f, paintBackgroundMask)
-
+        canvas.drawBitmap(
+            makeCircle(bitmapDefault.scale((baseRadius * 2).toInt(), (baseRadius * 2).toInt()))!!,
+            0f,
+            0f,
+            paintBackgroundMask
+        )
     }
 
     override fun setImageBitmap(bm: Bitmap?) {
         bitmapDefault = bm
         super.setImageBitmap(bm)
     }
+    // END REGION
 }

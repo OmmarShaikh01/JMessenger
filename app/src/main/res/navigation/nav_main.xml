@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_homeFragment_to_friendProfileFragment"
             app:destination="@id/friendProfileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_friendRequestsFragment"
+            app:destination="@id/friendRequestsFragment" />
     </fragment>
     <navigation android:id="@+id/nav_userAuth"
         app:startDestination="@id/startFragment">
@@ -150,4 +153,9 @@
         android:name="org.jam.jmessenger.ui.contacts.FriendProfileFragment"
         android:label="friend_profile_fragment"
         tools:layout="@layout/friend_profile_fragment" />
+    <fragment
+        android:id="@+id/friendRequestsFragment"
+        android:name="org.jam.jmessenger.ui.contacts.FriendRequestsFragment"
+        android:label="friend_requests_fragment"
+        tools:layout="@layout/friend_requests_fragment" />
 </navigation>
