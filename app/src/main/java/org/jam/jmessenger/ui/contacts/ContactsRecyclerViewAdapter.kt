@@ -1,4 +1,4 @@
-package org.jam.jmessenger.ui.misc
+package org.jam.jmessenger.ui.contacts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.UserFriend
-import org.jam.jmessenger.ui.contacts.ContactsHomeViewModel
+import org.jam.jmessenger.ui.misc.FriendInfoPopupFragment
 import org.jam.jmessenger.widgets.ProfileRoundImageView
 
 
@@ -46,6 +46,7 @@ class ContactsRecyclerViewAdapter(
         parentViewModel.loadUserFriendInfo(data.uid, name, status)
     }
 
+    // START REGION: overrides
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contacts_recycler_view_item, parent, false)
         popupFragmentManager = (view.context as AppCompatActivity).supportFragmentManager
@@ -69,6 +70,8 @@ class ContactsRecyclerViewAdapter(
     override fun getItemCount(): Int {
         return userFriendsList.size
     }
+    // END REGION
+
 
     inner class ContactsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var TAG = "ContactsViewHolder"

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
 import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.Profile
@@ -29,12 +30,7 @@ class UserProfileViewModel(private val uid: String) : DefaultViewModel() {
     var profile: LiveData<Profile> = _profile
 
     init {
-        updateUIData(uid)
-    }
-
-    private fun updateUIData(uid: String) {
         loadUserInfo(uid)
-        loadUserProfile(uid)
     }
 
     fun loadUserInfo(uid: String) {
@@ -43,13 +39,22 @@ class UserProfileViewModel(private val uid: String) : DefaultViewModel() {
         }
     }
 
-    fun updateUserInfo(user: User) {
-        database_repository.createNewUser(user).addOnSuccessListener {  }
+    fun updateUserInfo(user: User): Task<Void> {
+        return database_repository.createNewUser(user)
     }
 
-    fun loadUserProfile(uid: String) {
-        storage_repository.loadUserProfileImage(uid) { result: Result<Profile> ->
-            onResult(_profile, result)
+    fun loadUserProfile(uid: String? = null, ref: String? = null) {
+        uid?.let {
+            storage_repository.loadUserProfileImage(it) { result: Result<Profile> ->
+                onResult(_profile, result)
+            }
+            return
+        }
+        ref?.let {
+            storage_repository.loadURIImage(it) { result: Result<Profile> ->
+                onResult(_profile, result)
+            }
+            return
         }
     }
 

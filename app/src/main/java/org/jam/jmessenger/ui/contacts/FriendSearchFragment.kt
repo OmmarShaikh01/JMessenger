@@ -21,13 +21,14 @@ import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.Profile
 import org.jam.jmessenger.data.db.entity.User
+import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.databinding.FriendSearchFragmentBinding
 import org.jam.jmessenger.ui.hideKeyboard
 
 
 class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQueryTextListener {
-    private var authdUser = Firebase.auth.currentUser
     private var TAG = "FriendSearchFragment"
+    private var authdUser = AuthenticationRepository().getValidUser()!!
 
     private lateinit var viewModel: FriendSearchViewModel
     private lateinit var bindings: FriendSearchFragmentBinding
@@ -45,13 +46,13 @@ class FriendSearchFragment : Fragment(), View.OnClickListener, SearchView.OnQuer
 
     private fun observeViewModel() {
         // Observers Data Changes
-        viewModel.friendInfo.observe(this.viewLifecycleOwner, Observer { data: User ->
+        viewModel.friendInfo.observe(this.viewLifecycleOwner, { data: User ->
             updateFriendInfo(data)
         })
-        viewModel.friendProfile.observe(this.viewLifecycleOwner, Observer { data: Profile ->
+        viewModel.friendProfile.observe(this.viewLifecycleOwner, { data: Profile ->
             updateFriendProfile(data)
         })
-        viewModel.friendRequestState.observe(this.viewLifecycleOwner, Observer { data: FriendState ->
+        viewModel.friendRequestState.observe(this.viewLifecycleOwner, { data: FriendState ->
             raiseToastOnFriendStateChange(data)
         })
     }

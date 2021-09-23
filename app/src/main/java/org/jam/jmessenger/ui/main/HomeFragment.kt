@@ -10,18 +10,14 @@ import androidx.navigation.Navigation
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.R
+import org.jam.jmessenger.data.db.repository.AuthenticationRepository
+import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.databinding.HomeFragmentBinding
 import org.jam.jmessenger.ui.chats.ChatsHomeFragment
 import org.jam.jmessenger.ui.contacts.ContactsHomeFragment
 import org.jam.jmessenger.ui.groups.GroupsHomeFragment
 
-
-/*
-* TODO: last seen of user profile. ad is online of use setter
-* */
 
 /**
  * Home fragment, home fragment for the application
@@ -32,7 +28,9 @@ class HomeFragment : Fragment() {
     private lateinit var bindings: HomeFragmentBinding
     private lateinit var navController: NavController
     private lateinit var viewpager: ViewPager2
-
+    private var TAG = "HomeFragment"
+    private var databaseRepository = DatabaseRepository()
+    private var authRepository = AuthenticationRepository()
 
     /**
      * Sets tool bar option menu and implements the listener for item click events
@@ -43,14 +41,16 @@ class HomeFragment : Fragment() {
         bindings.homeToolbar.inflateMenu(R.menu.menu_home)
 
         // item click handler
-        bindings.homeToolbar.setOnMenuItemClickListener{ item ->
+        bindings.homeToolbar.setOnMenuItemClickListener { item ->
             var menuclick = false
             when(item.toString()) {
                 "Logout" -> {
-                    Firebase.auth.signOut()
-                    // TODO: Update Last seen
                     menuclick = true
                     navController.navigate(HomeFragmentDirections.actionHomeFragmentToNavUserAuth())
+                    authRepository.getValidUser()?.uid?.let {
+                        databaseRepository.updateUserLastSeen(it)
+                    }
+                    authRepository.signout()
                 }
                 "Settings" -> {
                     menuclick = true
@@ -80,6 +80,9 @@ class HomeFragment : Fragment() {
         bindings = HomeFragmentBinding.inflate(inflater)
         viewpager = bindings.homeViewPager2
 
+        authRepository.getValidUser()?.uid?.let {
+            databaseRepository.updateUserOnlineStatus(it, true)
+        }
         // Sets main homepage action menu
         setToolBarOptionMenu()
         return bindings.root
@@ -109,6 +112,13 @@ class HomeFragment : Fragment() {
             }
         }.attach()
     }
+
+    override fun onDestroyView() {
+        authRepository.getValidUser()?.uid?.let {
+            databaseRepository.updateUserLastSeen(it)
+        }
+        super.onDestroyView()
+    }
 }
 
 
@@ -117,15 +127,15 @@ class HomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment){
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
-        return when (position) {
+        when (position) {
             0 -> {
-                ChatsHomeFragment()
+                return ChatsHomeFragment()
             }
             1 -> {
-                GroupsHomeFragment()
+                return GroupsHomeFragment()
             }
             2 -> {
-                ContactsHomeFragment()
+                return ContactsHomeFragment()
             }
             else -> {
                 throw IndexOutOfBoundsException()

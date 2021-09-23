@@ -97,8 +97,8 @@ class FriendSearchViewModel(private val uid: String) : DefaultViewModel() {
         database_repository.searchFriendEmail(email) { result: Result<User> ->
             onResult(_friendInfo, result)
             if (result is Result.Success){
-                val uid = _friendInfo.value!!.info.uid
-                storage_repository.loadUserProfileImage(uid) { profileResult: Result<Profile> ->
+                val uri = _friendInfo.value!!.info.profileuri
+                storage_repository.loadURIImage(uri) { profileResult: Result<Profile> ->
                     onResult(_friendProfile, profileResult)
                 }
             }

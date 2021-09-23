@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/contactsItem_ConstLayout"
+    android:id="@+id/chatsItem_ConstLayout"
     android:layout_width="match_parent"
     android:layout_height="80dp">
 
     <org.jam.jmessenger.widgets.ProfileRoundImageView
-        android:id="@+id/contactsItem_ImageView_Profile"
+        android:id="@+id/chatsItem_ImageView_Profile"
         android:layout_width="68dp"
         android:layout_height="68dp"
         android:layout_marginStart="6dp"
@@ -37,23 +37,32 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/guideline16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/contactsItem_ImageView_Profile"
+        app:layout_constraintStart_toEndOf="@+id/chatsItem_ImageView_Profile"
         app:layout_constraintTop_toTopOf="@+id/guideline13">
 
         <TextView
-            android:id="@+id/contactsItem_TextView_Name"
+            android:id="@+id/chatsItem_TextView_Name"
             style="@style/Text_Headline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp" />
+            android:paddingBottom="8dp"
+            android:text="User Friend Name" />
 
         <TextView
-            android:id="@+id/contactsItem_TextView_status"
+            android:id="@+id/chatsItem_TextView_status"
             style="@style/Text_Subtitle2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="bottom" />
+            android:gravity="bottom"
+            android:text="User Friend Status" />
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline13"
@@ -62,11 +71,39 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline16"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintBottom_toTopOf="@+id/guideline16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline13">
+
+        <ImageView
+            android:id="@+id/chatsItem_ImageView_mute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_baseline_volume_off_24" />
+
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/chatsItem_TextView_unreadcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/text_view_badge_positive"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/primaryDarkColor" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

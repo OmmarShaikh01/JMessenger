@@ -2,23 +2,27 @@ package org.jam.jmessenger.data.db.repository
 
 import android.net.wifi.hotspot2.pps.Credential
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class AuthenticationRepository { // TODO: NEEDS TO BE PUT IN VIEW MODELS
-    private val authenticator = Firebase.auth
-    private val currentUser = authenticator.currentUser
-    val useruid = currentUser?.uid
-    val useremail = currentUser?.uid
+class AuthenticationRepository(private val validateUser: Boolean = true) { // TODO: NEEDS TO BE PUT IN VIEW MODELS
+    private val authenticator = FirebaseAuth.getInstance()
+    val currentUser: FirebaseUser?
+        get() = getValidUser()
+    val useruid: String?
+        get() = currentUser?.uid
+    val useremail: String?
+        get() = currentUser?.email
 
-    fun getValidUser(): FirebaseUser {
-        if (currentUser == null) {
-            throw FirebaseAuthInvalidCredentialsException("AuthenticationRepository", "Illegal User")
+    fun getValidUser(): FirebaseUser? {
+        if (authenticator.currentUser == null) {
+            if (validateUser) {
+                throw FirebaseAuthInvalidCredentialsException("AuthenticationRepository", "Illegal User")
+            }
+            return null
         } else {
-            return currentUser
+            return authenticator.currentUser
         }
     }
 
@@ -34,10 +38,16 @@ class AuthenticationRepository { // TODO: NEEDS TO BE PUT IN VIEW MODELS
         return authenticator.signInWithEmailAndPassword(email, password)
     }
 
-    fun updateUserEmail(email: String, password: String): Task<Void>? {
-        if (currentUser != null) {
-            return currentUser.updateEmail(email)
-        }
-        return null
+    fun updateUserEmail(email: String, password: String? = null): Task<Void>? {
+        return authenticator.currentUser?.updateEmail(email)
+    }
+
+    fun reauthenticate(email: String, password: String): Task<Void>? {
+        val creds = EmailAuthProvider.getCredential(email, password)
+        return authenticator.currentUser?.reauthenticate(creds)
+    }
+
+    fun signout(){
+        authenticator.signOut()
     }
 }

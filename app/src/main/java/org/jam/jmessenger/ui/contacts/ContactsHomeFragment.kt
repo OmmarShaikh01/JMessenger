@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -17,16 +16,14 @@ import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.entity.UserFriend
+import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.databinding.ContactsHomeFragmentBinding
 import org.jam.jmessenger.ui.main.HomeFragmentDirections
-import org.jam.jmessenger.ui.misc.ContactsRecyclerViewAdapter
-import org.jam.jmessenger.ui.misc.FriendRequestsRecyclerViewAdapter
 
 
 class ContactsHomeFragment :  Fragment(), View.OnClickListener {
     private var TAG = "ContactsHomeFragment"
-    private var authdUser = Firebase.auth.currentUser?:
-        throw FirebaseAuthInvalidUserException(TAG, "Invalid User accessing app")
+    private var authdUser = AuthenticationRepository().getValidUser()!!
 
     private lateinit var viewModel: ContactsHomeViewModel
     private lateinit var bindings:ContactsHomeFragmentBinding
@@ -116,6 +113,11 @@ class ContactsHomeFragment :  Fragment(), View.OnClickListener {
                 parentNavController.navigate(HomeFragmentDirections.actionHomeFragmentToFriendRequestsFragment())
             }
         }
+    }
+
+    override fun onDestroyView() {
+        bindings.contactsHomeRecyclerView.adapter = null
+        super.onDestroyView()
     }
     // END REGION
 }

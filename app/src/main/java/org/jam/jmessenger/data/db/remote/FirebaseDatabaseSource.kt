@@ -2,11 +2,9 @@ package org.jam.jmessenger.data.db.remote
 
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.User
@@ -21,7 +19,7 @@ import org.jam.jmessenger.data.db.entity.UserFriend
 @Suppress("PrivatePropertyName")
 class FirebaseDatabaseSource {
     private val TAG = "FirebaseDatabaseSource"
-    private val firebaseDatabase = Firebase.firestore
+    private val firebaseDatabase = FirebaseFirestore.getInstance()
 
 
     // Search Functions ----------------------------------------------------------------------------
@@ -74,8 +72,8 @@ class FirebaseDatabaseSource {
      * @return: Task<Void>
      */
     fun addFriend(user: User, friend: User): Task<Void> {
-        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.OUTREQUESTED)
-        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.INREQUESTED)
+        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.OUTREQUESTED, friend.info.profileuri)
+        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.INREQUESTED, user.info.profileuri)
 
         // Update Outgoing request to the friends
         return Tasks.whenAll(
@@ -94,8 +92,8 @@ class FirebaseDatabaseSource {
      * @return: Task<Void>
      */
     fun blockFriend(user: User, friend: User): Task<Void>{
-        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.BLOCKED)
-        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.BLOCKER)
+        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.BLOCKED, friend.info.profileuri)
+        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.BLOCKER, user.info.profileuri)
 
         // Update Outgoing request to the friends
         return Tasks.whenAll(
@@ -114,8 +112,8 @@ class FirebaseDatabaseSource {
      * @return: Task<Void>
      */
     fun unblockFriend(user: User, friend: User): Task<Void>{
-        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.FRIEND)
-        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.FRIEND)
+        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.FRIEND, friend.info.profileuri)
+        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.FRIEND, user.info.profileuri)
 
         // Update Outgoing request to the friends
         return Tasks.whenAll(
@@ -134,8 +132,8 @@ class FirebaseDatabaseSource {
      * @return: Task<Void>
      */
     fun acceptFriend(user: User, friend: User): Task<Void> {
-        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.FRIEND)
-        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.FRIEND)
+        val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.FRIEND, friend.info.profileuri)
+        val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.FRIEND, user.info.profileuri)
         return Tasks.whenAll(
             firebaseDatabase.collection("users").document(userRequest.uid)
             .update("friends.${friendRequest.uid}", friendRequest),
@@ -183,6 +181,33 @@ class FirebaseDatabaseSource {
     fun updateUserData(user: User): Task<Void> {
         return firebaseDatabase.collection("users").document(user.info.uid).set(user)
     }
+
+    /**
+     * Update user last seen
+     *
+     * @param uid: users uid
+     * @return
+     */
+    fun updateUserLastSeen(uid: String): Task<DocumentSnapshot> {
+        return firebaseDatabase.collection("users").document(uid).get().addOnSuccessListener { doc ->
+            val user = doc.toObject<User>()
+            if (user != null) {
+                user.info.last_seen = null
+                user.info.isOnline = false
+                firebaseDatabase.collection("users").document(user.info.uid).set(user)
+            }
+        }
+    }
+
+    fun updateUserOnlineStatus(uid: String, isonline: Boolean): Task<DocumentSnapshot> {
+        return firebaseDatabase.collection("users").document(uid).get().addOnSuccessListener { doc ->
+            val user = doc.toObject<User>()
+            if (user != null) {
+                user.info.isOnline = isonline
+                firebaseDatabase.collection("users").document(user.info.uid).set(user)
+            }
+        }
+    }
     // END REGION
 
 
@@ -223,8 +248,7 @@ class FirebaseDatabaseSource {
     // END REGION
 
 
-    // Misc Functions
-
+    // Misc Functions ------------------------------------------------------------------------------
     /** TEST ONLY FUNCTION
      * Use emulator
      *
@@ -233,6 +257,6 @@ class FirebaseDatabaseSource {
      */
     fun useEmulator(host: String, port: Int) {
         firebaseDatabase.useEmulator(host, port)
-        Tasks.await(firebaseDatabase.clearPersistence())
+        firebaseDatabase.clearPersistence()
     }
 }

@@ -1,19 +1,12 @@
 package org.jam.jmessenger.ui.contacts
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import org.jam.jmessenger.data.db.Event
 import org.jam.jmessenger.data.db.Result.*
-import org.jam.jmessenger.data.db.Result.Error
-import org.jam.jmessenger.data.db.Result.Loading
 import org.jam.jmessenger.data.db.Result.Success
-import org.jam.jmessenger.data.db.entity.Profile
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.data.db.entity.UserInfo

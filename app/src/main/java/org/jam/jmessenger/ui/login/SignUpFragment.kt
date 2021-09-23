@@ -19,8 +19,10 @@ import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.data.db.entity.User
+import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.databinding.SignUpFragmentBinding
+import org.jam.jmessenger.ui.hideKeyboard
 
 
 /**
@@ -30,12 +32,12 @@ import org.jam.jmessenger.databinding.SignUpFragmentBinding
  */
 @SuppressLint("SetTextI18n")
 class SignUpFragment : Fragment(), View.OnClickListener {
-    private val repository: DatabaseRepository = DatabaseRepository()
-    private var user: User = User()
-
     private lateinit var bindings: SignUpFragmentBinding
     private lateinit var navController: NavController
-    private lateinit var auth: FirebaseAuth
+
+    private val repository: DatabaseRepository = DatabaseRepository()
+    private val auth = AuthenticationRepository(false)
+    private var user: User = User()
 
 
     private fun signInTextClickable(textView: TextView) {
@@ -53,9 +55,9 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     private fun createAccount(name: String?, email: String?, password: String?) {
         if ((email?.length != 0) and (password?.length != 0) and (name?.length != 0)) {
             // all fields are available, try user creation on Firebase Authentication system
-             auth.createUserWithEmailAndPassword(email!!, password!!)
+             auth.createUserWithEmail(email!!, password!!)
                 .addOnSuccessListener(requireActivity()) { result ->
-                    user.info.uid = auth.currentUser!!.uid
+                    user.info.uid = auth.useruid!!
                     user.info.name = name!!
                     user.info.email = email
 
@@ -78,6 +80,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
                 bindings.signupTextView5.text = "Empty Password"
             }
         }
+        hideKeyboard()
     }
 
     private fun onSuccessHandlerSignUp(result: AuthResult){
@@ -121,7 +124,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         bindings = SignUpFragmentBinding.inflate(inflater)
-        auth = Firebase.auth
         return bindings.root
     }
 

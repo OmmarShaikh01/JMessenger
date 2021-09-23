@@ -1,4 +1,4 @@
-package org.jam.jmessenger.ui.misc
+package org.jam.jmessenger.ui.contacts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +12,6 @@ import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.Event
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.UserFriend
-import org.jam.jmessenger.ui.contacts.FriendRequestsViewModel
 import org.jam.jmessenger.widgets.ProfileRoundImageView
 import java.lang.ref.WeakReference
 

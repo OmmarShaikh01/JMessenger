@@ -19,7 +19,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.databinding.SignInFragmentBinding
+import org.jam.jmessenger.ui.hideKeyboard
 
 
 /**
@@ -30,7 +32,7 @@ import org.jam.jmessenger.databinding.SignInFragmentBinding
 class SignInFragment : Fragment(), View.OnClickListener {
     private lateinit var bindings: SignInFragmentBinding
     private lateinit var navController: NavController
-    private var auth = Firebase.auth
+    private var auth =  AuthenticationRepository(false)
 
 
     /**
@@ -65,7 +67,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
 
         if ((email?.length != 0) and (password?.length != 0)) {
             // validates the user when email and password is passed in
-            auth.signInWithEmailAndPassword(email!!, password!!)
+            auth.signinUserWithEmail(email!!, password!!)
                 .addOnSuccessListener(requireActivity()) {
                     Toast.makeText(requireContext(), "Authentication Successful", Toast.LENGTH_SHORT).show()
                     navController.navigate(SignInFragmentDirections.actionSignInFragmentToHomeFragment())
@@ -83,6 +85,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
                 bindings.signinTextView4.text = "Empty Password"
             }
         }
+        hideKeyboard()
     }
 
     /**

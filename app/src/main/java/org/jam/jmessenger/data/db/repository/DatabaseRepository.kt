@@ -1,6 +1,7 @@
 package org.jam.jmessenger.data.db.repository
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.ktx.toObject
 import org.jam.jmessenger.data.db.Result
@@ -141,6 +142,14 @@ class DatabaseRepository {
 
     fun updateUserData(user: User, friend: User): Task<Void> {
         return firebaseDatabaseService.acceptFriend(user, friend)
+    }
+
+    fun updateUserLastSeen(uid: String): Task<DocumentSnapshot> {
+        return firebaseDatabaseService.updateUserLastSeen(uid)
+    }
+
+    fun updateUserOnlineStatus(uid: String, isonline: Boolean): Task<DocumentSnapshot> {
+        return firebaseDatabaseService.updateUserOnlineStatus(uid, isonline)
     }
     // END REGION
 

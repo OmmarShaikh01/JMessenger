@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
@@ -30,6 +31,7 @@ import com.squareup.picasso.Target
 import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.entity.Profile
 import org.jam.jmessenger.data.db.entity.User
+import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.databinding.UserProfileFragmentBinding
 import java.io.ByteArrayOutputStream
 
@@ -41,8 +43,9 @@ import java.io.ByteArrayOutputStream
 
 
 class UserProfileFragment : Fragment(), View.OnClickListener {
-    private var authdUser = Firebase.auth.currentUser
     private var TAG = "UserProfileFragment"
+    private var auth = AuthenticationRepository()
+    private var authdUser = auth.getValidUser()!!
 
     // loaded locally
     private var loadedUser: User = User()
@@ -64,17 +67,21 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
         // Declaring Fragment ViewModel
         viewModel = ViewModelProvider(
             requireActivity(),
-            UserProfileViewModelFactory(authdUser?.uid.toString())
+            UserProfileViewModelFactory(authdUser.uid)
         ).get(UserProfileViewModel::class.java)
         observeViewModel()
     }
 
     private fun observeViewModel() {
         // Observers user Data Changes
-        viewModel.user.observe(this.viewLifecycleOwner, Observer { user ->
-            if (user != null) { cacheUser = user; updateUserInfoUI(user) }
+        viewModel.user.observe(this.viewLifecycleOwner, { user ->
+            if (user != null) {
+                cacheUser = user
+                updateUserInfoUI(user)
+                viewModel.loadUserProfile(ref = user.info.profileuri)
+            }
         })
-        viewModel.profile.observe(this.viewLifecycleOwner, Observer { profile ->
+        viewModel.profile.observe(this.viewLifecycleOwner, { profile ->
             if (profile != null) { cacheProfile = profile; updateProfileUI(profile) }
         })
     }
@@ -88,39 +95,35 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateUserInfo(email: String, name: String, status: String){
-        if (email.isNotEmpty() and name.isNotEmpty() and status.isNotEmpty()) {
-            // update firebase auth email
-            if (authdUser!!.email.toString() != email) {
-                // reauths if credentials are stale
-                if (bindings.uprofileTextInputLayoutPassword.isVisible and bindings.uprofileEditTextPassword.text.toString().isNotEmpty()) {
-                    val cred = EmailAuthProvider.getCredential(email, bindings.uprofileEditTextPassword.text.toString())
-                    authdUser!!.reauthenticate(cred)
-                }
+        if (email.isEmpty() and name.isEmpty() and status.isEmpty()) return
 
-                // updates te email in authenticator
-                authdUser!!.updateEmail(email).addOnSuccessListener {
-                    // updates firebase datastore info on auth successful
-                    cacheUser.info.email = email
-                    cacheUser.info.name = name
-                    cacheUser.info.status = status
-                    viewModel.updateUserInfo(cacheUser)
-                    Toast.makeText(requireContext(), "Update Successful", Toast.LENGTH_SHORT).show()
-                } .addOnFailureListener() {
-                    Log.e(TAG, it.toString()) // LOGGER TODO: implement and test stale cred
-                    when(it){
-                        is FirebaseAuthRecentLoginRequiredException -> {
-                            bindings.uprofileTextInputLayoutPassword.visibility = View.VISIBLE
-                            bindings.uprofileTextInputLayoutPassword.error = "Sensitive Operation, Enter Password"
-                        }
-                    }
-                    Toast.makeText(requireContext(), "Update Unsuccessful", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                // updates if email ins unchanged
-                cacheUser.info.name = name
-                cacheUser.info.status = status
+        // update firebase auth email
+        if (authdUser.email.toString() != email) {
+            // updates te email in authenticator
+            auth.updateUserEmail(email)?.addOnSuccessListener {
+                // updates firebase datastore info on auth successful
+                cacheUser.info.email = email; cacheUser.info.name = name; cacheUser.info.status = status
                 viewModel.updateUserInfo(cacheUser)
+                bindings.uprofileTextInputLayoutPassword.visibility = View.INVISIBLE
                 Toast.makeText(requireContext(), "Update Successful", Toast.LENGTH_SHORT).show()
+            }?.addOnFailureListener() { exception ->
+                Log.e(TAG, exception.toString())
+                when(exception){
+                    is FirebaseAuthRecentLoginRequiredException -> {
+                        bindings.uprofileTextInputLayoutPassword.visibility = View.VISIBLE
+                        bindings.uprofileTextInputLayoutPassword.error = "Sensitive Operation, Enter Password"
+                    }
+                }
+                Toast.makeText(requireContext(), "Update Unsuccessful", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            // updates if email is unchanged
+            cacheUser.info.name = name
+            cacheUser.info.status = status
+            viewModel.updateUserInfo(cacheUser).addOnSuccessListener {
+                Toast.makeText(requireContext(), "Update Successful", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener{
+                Toast.makeText(requireContext(), "Update Unsuccessful", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -143,15 +146,15 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
                 if (errorDrawable != null) {
-                    loadBitmapProfileFront(bitmap = errorDrawable.toBitmap(512, 512))
-                    loadBitmapProfileBack(bitmap = errorDrawable.toBitmap(512, 512))
+                    loadBitmapProfileFront(errorDrawable.toBitmap(512, 512))
+                    loadBitmapProfileBack(errorDrawable.toBitmap(512, 512))
                 }
             }
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
                 if (placeHolderDrawable != null) {
-                    loadBitmapProfileFront(bitmap = placeHolderDrawable.toBitmap(512, 512))
-                    loadBitmapProfileBack(bitmap = placeHolderDrawable.toBitmap(512, 512))
+                    loadBitmapProfileFront(placeHolderDrawable.toBitmap(512, 512))
+                    loadBitmapProfileBack(placeHolderDrawable.toBitmap(512, 512))
                 }
             }
         }
@@ -170,15 +173,18 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
         loadBitmapProfileBack(bitmap)
 
         // Firebase Update for userProfile
-        viewModel.updateUserProfile(authdUser!!.uid, profile)
+        viewModel.user.value?.let { user ->
+            user.info.profileuri = "profile_images/${user.info.uid}.png"
+            viewModel.updateUserInfo(user)
+        }
+        viewModel.updateUserProfile(authdUser.uid, profile)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(),
                     "Profile Update Successful",
                     Toast.LENGTH_SHORT).show()
-
                 cacheProfile.data = profile.data
             }
-            .addOnFailureListener() {
+            .addOnFailureListener {
                 Toast.makeText(requireContext(),
                     "Profile Update Unsuccessful",
                     Toast.LENGTH_SHORT).show()
@@ -225,7 +231,7 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         xsavedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         bindings = UserProfileFragmentBinding.inflate(inflater)
         bindings.uprofileTextInputLayoutPassword.visibility = View.INVISIBLE
         initViewModel()
@@ -250,7 +256,21 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
                 val email = bindings.uprofileEditTextEmail.text.toString()
                 val name = bindings.uprofileEditTextName.text.toString()
                 val status = bindings.uprofileEditTextStatus.text.toString()
-                updateUserInfo(email, name, status)
+
+                // reauths if credentials are stale
+                if (bindings.uprofileTextInputLayoutPassword.isVisible) {
+                    val pass = bindings.uprofileEditTextPassword.text.toString()
+                    if (pass.isNotEmpty()) {
+                        auth.reauthenticate(email,
+                            bindings.uprofileEditTextPassword.text.toString())?.addOnSuccessListener {
+                            updateUserInfo(email, name, status)
+                        }?.addOnFailureListener {
+                            Toast.makeText(requireContext(), "Update Unsuccessful", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    updateUserInfo(email, name, status)
+                }
             }
             bindings.uprofileButtonDiscard -> {
                 // considers the condition where the data has been modified but needs to be discarded
