@@ -12,13 +12,13 @@ import com.google.firebase.ktx.Firebase
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.Is
+import org.jam.jmessenger.data.db.entity.Message
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.entity.UserInfo
+import org.jam.jmessenger.data.db.remote.FirebaseChatDatabaseSources
 import org.jam.jmessenger.data.db.remote.FirebaseDatabaseSource
-import org.junit.AfterClass
-import org.junit.BeforeClass
-import org.junit.FixMethodOrder
-import org.junit.Test
+import org.jam.jmessenger.data.db.repository.ChatsRepository
+import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
@@ -29,6 +29,7 @@ import org.junit.runners.MethodSorters
 class InstrumentedTestsSetup {
     companion object {
         private var database: FirebaseDatabaseSource = FirebaseDatabaseSource()
+        private var chatdatabase: FirebaseChatDatabaseSources = FirebaseChatDatabaseSources()
         private var adminDatabase = Firebase.firestore
         private var auth: FirebaseAuth = Firebase.auth
 
@@ -106,6 +107,31 @@ class InstrumentedTestsSetup {
                 addFriend("testuser$index@gmail.com", "testuser$friendindex@gmail.com")
             }
             Log.i(TAG, "Created User Friend $index")
+        }
+    }
+
+    @Test
+    fun test3_createFriendMessages() {
+        var sender: User? = null
+        var reciever: User? = null
+        for (index in 1..10) {
+            Tasks.await(database.searchFriendEmail("testuser$index@gmail.com")).let {
+                for (item in it) {
+                    sender = item.toObject()
+                    return@let
+                }
+            }
+            for (friendindex in 1..10) {
+                if (friendindex == index) continue
+                Tasks.await(database.searchFriendEmail("testuser$friendindex@gmail.com")).let {
+                    for (item in it) {
+                        reciever = item.toObject()
+                        Tasks.await(chatdatabase.sendMessage(sender!!.info.uid, reciever!!.info.uid, "HELLO WORLD"))
+                        return@let
+                    }
+                }
+                Log.i(TAG, "Send Message: $index-$friendindex")
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.databinding.ChatsHomeFragmentBinding
 import org.jam.jmessenger.ui.main.HomeFragmentDirections
+import java.lang.ref.WeakReference
 
 
 class ChatsHomeFragment: Fragment(), View.OnClickListener {
@@ -35,7 +36,7 @@ class ChatsHomeFragment: Fragment(), View.OnClickListener {
         // Declaring Fragment ViewModel
         viewModel = ViewModelProvider(
             requireActivity(),
-            ChatsHomeViewModelFactory(authdUser.uid)
+            ChatsHomeViewModelFactory(WeakReference(requireContext()), authdUser.uid)
         ).get(ChatsHomeViewModel::class.java)
         observeViewModel()
     }
@@ -84,5 +85,9 @@ class ChatsHomeFragment: Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) { }
 
+    override fun onDestroyView() {
+        bindings.chatsHomeRecyclerView.adapter = null
+        super.onDestroyView()
+    }
     // END REGION
 }

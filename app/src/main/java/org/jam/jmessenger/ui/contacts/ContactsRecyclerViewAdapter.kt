@@ -14,6 +14,7 @@ import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.ui.misc.FriendInfoPopupFragment
 import org.jam.jmessenger.widgets.ProfileRoundImageView
+import java.lang.ref.WeakReference
 
 
 class ContactsRecyclerViewAdapter(
@@ -50,7 +51,7 @@ class ContactsRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contacts_recycler_view_item, parent, false)
         popupFragmentManager = (view.context as AppCompatActivity).supportFragmentManager
-        popupFragment = FriendInfoPopupFragment(parentNavController, parentViewModel)
+        popupFragment = FriendInfoPopupFragment(WeakReference(parentNavController), WeakReference(parentViewModel))
         return ContactsViewHolder(view)
     }
 

@@ -16,29 +16,30 @@ import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.databinding.FragmentFriendInfoPopupBinding
 import org.jam.jmessenger.ui.contacts.ContactsHomeViewModel
 import org.jam.jmessenger.widgets.ProfileRoundImageView
+import java.lang.ref.WeakReference
 
 
 class FriendInfoPopupFragment(
-    private var parentNavController: NavController,
-    private var parentViewModel: ContactsHomeViewModel
+    private var parentNavController: WeakReference<NavController>,
+    private var parentViewModel: WeakReference<ContactsHomeViewModel>
     ) : DialogFragment() {
 
     private lateinit var bindings: FragmentFriendInfoPopupBinding
     var userFriend: UserFriend = UserFriend()
 
     private fun chatNavigate() {
-        parentNavController
+        parentNavController.get()?.backQueue.toString()
         TODO("NOT YET IMPLEMENTED")
     }
     private fun blockUser(userFriend: UserFriend) {
         if (userFriend.uid.isNotEmpty()) {
-            parentViewModel.blockUser(userFriend)
+            parentViewModel.get()?.blockUser(userFriend)
             dismiss()
         }
     }
     private fun unfriendUser(userFriend: UserFriend) {
         if (userFriend.uid.isNotEmpty()) {
-            parentViewModel.unfriendUser(userFriend)
+            parentViewModel.get()?.unfriendUser(userFriend)
             dismiss()
         }
     }
@@ -59,7 +60,7 @@ class FriendInfoPopupFragment(
     private fun updateUI() {
         if (userFriend.uid.isNotEmpty()) {
             bindings.friendInfoPopTextViewName.text = userFriend.name
-            parentViewModel.loadUserFriendProfileImage(userFriend.uid, bindings.friendInfoPopImageView)
+            parentViewModel.get()?.loadUserFriendProfileImage(userFriend.uid, bindings.friendInfoPopImageView)
         }
     }
 }
