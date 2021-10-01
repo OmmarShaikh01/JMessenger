@@ -116,6 +116,17 @@ class DatabaseRepository {
             }
             .addOnFailureListener { exception -> infix.invoke(Result.Error(exception)) }
     }
+
+    fun getFriendIsMute(uid: String, frienduid: String, infix: ((Result<Boolean>) -> Unit)) {
+        firebaseDatabaseService.loadUserFriends(uid)
+                .addOnSuccessListener { document_snap ->
+                    val mute = document_snap?.toObject<User>()?.friends?.get(frienduid)?.isMute
+                    if (mute != null) {
+                        infix.invoke(Result.Success(data = mute))
+                    }
+                }
+                .addOnFailureListener { exception -> infix.invoke(Result.Error(exception)) }
+    }
     // END REGION
 
 
@@ -130,6 +141,10 @@ class DatabaseRepository {
 
     fun unblockFriend(user: User, friend: User): Task<Void> {
         return firebaseDatabaseService.unblockFriend(user, friend)
+    }
+
+    fun muteFriend(user: User, friend: User, mute: Boolean = true): Task<Void> {
+        return firebaseDatabaseService.muteFriend(user, friend, mute)
     }
 
     fun rejectFriend(user: User, friend: User): Task<Void> {

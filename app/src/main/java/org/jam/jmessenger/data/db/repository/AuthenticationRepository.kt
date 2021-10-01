@@ -26,6 +26,10 @@ class AuthenticationRepository(private val validateUser: Boolean = true) { // TO
         }
     }
 
+    fun checkUserAvailable(): Boolean {
+        return authenticator.currentUser != null
+    }
+
     fun useEmulator(host: String, port: Int) {
         authenticator.useEmulator(host, port)
     }

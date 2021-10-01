@@ -1,26 +1,21 @@
 package org.jam.jmessenger.data.db.entity
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
 
 
-@Entity(tableName = "users")
+@DatabaseView(value = "SELECT user FROM (SELECT sender as user FROM messages UNION SELECT receiver as user FROM messages) GROUP BY user", viewName = "chatting_users")
 data class RoomUser(
-    @PrimaryKey(autoGenerate = false) var uid: String = "",
-    @ColumnInfo(name = "unreadCount") var unreadCount: Int = 0,
-    @ColumnInfo(name = "lastMesseged") var lastMesseged: Long? = null,
-    @ColumnInfo(name = "isMute") var isMute: Boolean = false
+    @ColumnInfo(name = "user") var user: String = "",
 )
 
 @Dao
 interface RoomUserDAO {
-    @Insert(entity = RoomUser::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg user: RoomUser)
+    @Query("SELECT * FROM chatting_users")
+    fun getUserList(): LiveData<List<RoomUser>>
 
-    @Update(entity = RoomUser::class, onConflict = OnConflictStrategy.REPLACE)
-    fun updateAll(vararg user: RoomUser)
-
-    @Delete(entity = RoomUser::class)
-    fun deleteUser(user: RoomUser)
+    @Query("SELECT * FROM chatting_users WHERE NOT(user LIKE :excludeUID)")
+    fun getUserList(excludeUID: String): LiveData<List<RoomUser>>
 }

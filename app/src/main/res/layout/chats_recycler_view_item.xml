@@ -25,7 +25,7 @@
         android:background="@color/secondaryDarkColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chatsItem_ImageView_Profile"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -43,17 +43,21 @@
         <TextView
             android:id="@+id/chatsItem_TextView_Name"
             style="@style/Text_Headline6"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:paddingBottom="8dp"
             android:text="User Friend Name" />
 
         <TextView
             android:id="@+id/chatsItem_TextView_status"
             style="@style/Text_Subtitle2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:gravity="bottom"
+            android:maxLines="1"
             android:text="User Friend Status" />
     </LinearLayout>
 
@@ -72,6 +76,7 @@
         app:layout_constraintGuide_percent="0.1" />
 
     <LinearLayout
+        android:id="@+id/linearLayout10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="6dp"
@@ -105,5 +110,18 @@
             android:textColor="@color/primaryDarkColor" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/chatsItem_TextView_sendTime"
+        style="@style/Text_Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/chatsItem_ImageView_Profile"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout10"
+        app:layout_constraintVertical_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

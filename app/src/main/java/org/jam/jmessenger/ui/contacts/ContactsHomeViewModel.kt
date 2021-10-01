@@ -48,29 +48,14 @@ class ContactsHomeViewModel(private val uid: String) : DefaultViewModel() {
     }
 
     fun loadUserFriendProfileImage(uid: String, imageView: Any) {
-        when(imageView) {
-            is ImageView -> {
-                storage_repository.loadUserProfileImage(uid) { result ->
-                    run {
-                        if (result is Result.Success) {
-                            result.data.let { profile ->
-                                val bmp =
-                                    BitmapFactory.decodeByteArray(profile.data, 0, profile.data.size)
-                                imageView.setImageBitmap(bmp)
-                            }
-                        }
-                    }
-                }
-            }
-            is ProfileRoundImageView -> {
-                storage_repository.loadUserProfileImage(uid) { result ->
-                    run {
-                        if (result is Result.Success) {
-                            result.data.let { profile ->
-                                val bmp =
-                                    BitmapFactory.decodeByteArray(profile.data, 0, profile.data.size)
-                                imageView.setImageBitmap(bmp)
-                            }
+        storage_repository.loadUserProfileImage(uid) { result ->
+            run {
+                if (result is Result.Success) {
+                    result.data.let { profile ->
+                        val bmp = BitmapFactory.decodeByteArray(profile.data, 0, profile.data.size)
+                        when(imageView) {
+                            is ImageView -> imageView.setImageBitmap(bmp)
+                            is ProfileRoundImageView -> imageView.setImageBitmap(bmp)
                         }
                     }
                 }

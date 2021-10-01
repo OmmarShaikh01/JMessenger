@@ -29,8 +29,10 @@ class FriendInfoPopupFragment(
 
     private fun chatNavigate() {
         parentNavController.get()?.backQueue.toString()
+        dismiss()
         TODO("NOT YET IMPLEMENTED")
     }
+
     private fun blockUser(userFriend: UserFriend) {
         if (userFriend.uid.isNotEmpty()) {
             parentViewModel.get()?.blockUser(userFriend)

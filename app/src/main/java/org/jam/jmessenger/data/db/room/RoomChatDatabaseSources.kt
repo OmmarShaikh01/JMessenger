@@ -10,7 +10,7 @@ import org.jam.jmessenger.data.db.entity.RoomUser
 import org.jam.jmessenger.data.db.entity.RoomUserDAO
 
 
-@Database(entities = [RoomUser::class, RoomMessage::class], version = 1)
+@Database(entities = [RoomMessage::class], views = [RoomUser::class], version = 1)
 abstract class RoomChatDatabaseSources: RoomDatabase() {
     abstract fun userDAO(): RoomUserDAO?
     abstract fun messageDao(): RoomMessageDAO?
@@ -30,7 +30,7 @@ abstract class RoomChatDatabaseSources: RoomDatabase() {
                     }
                     if ((INSTANCE == null) and (type == RoomChatDatabaseType.STORAGE)) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
-                                RoomChatDatabaseSources::class.java, "chats_database")
+                                RoomChatDatabaseSources::class.java, "chats_database.db")
                                 .fallbackToDestructiveMigration()
                                 .build()
                     }

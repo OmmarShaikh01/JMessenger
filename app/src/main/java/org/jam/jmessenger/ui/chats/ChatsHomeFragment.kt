@@ -9,16 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.room.Room
 import org.jam.jmessenger.R
+import org.jam.jmessenger.data.db.entity.RoomMessage
+import org.jam.jmessenger.data.db.entity.RoomUser
 import org.jam.jmessenger.data.db.entity.User
-import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.databinding.ChatsHomeFragmentBinding
-import org.jam.jmessenger.ui.main.HomeFragmentDirections
 import java.lang.ref.WeakReference
 
 
@@ -43,7 +40,14 @@ class ChatsHomeFragment: Fragment(), View.OnClickListener {
 
     private fun observeViewModel() {
         viewModel.userInfo.observe(this.viewLifecycleOwner, { data: User ->
-            updateRecyclerView(data.friends)
+
+        })
+        viewModel.userList.observe(this.viewLifecycleOwner, { data ->
+            val dataHashMap = HashMap<String, RoomUser>()
+            data.forEach {
+                dataHashMap[it.user] = it
+            }
+            updateRecyclerView(dataHashMap)
         })
     }
     // END REGION
@@ -53,15 +57,18 @@ class ChatsHomeFragment: Fragment(), View.OnClickListener {
     private fun initRecyclerView() {
         recyclerViewAdapter = ChatsRecyclerViewAdapter(HashMap(), viewModel, parentNavController)
         bindings.chatsHomeRecyclerView.adapter = recyclerViewAdapter
-        val userFriends = viewModel.userInfo.value
-        if (userFriends!= null) {
-            updateRecyclerView(userFriends.friends)
+        viewModel.userList.value?.let { data ->
+            val dataHashMap = HashMap<String, RoomUser>()
+            data.forEach {
+                dataHashMap[it.user] = it
+            }
+            updateRecyclerView(dataHashMap)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun updateRecyclerView(friends: HashMap<String, UserFriend>) {
-        recyclerViewAdapter.updateList(friends)
+    private fun updateRecyclerView(chats: HashMap<String, RoomUser>) {
+        recyclerViewAdapter.updateList(chats)
         recyclerViewAdapter.notifyDataSetChanged()
     }
     // END REGION

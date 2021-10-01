@@ -1,10 +1,7 @@
 package org.jam.jmessenger.data.db.remote
 
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import org.jam.jmessenger.data.db.entity.Message
 import org.jam.jmessenger.data.db.entity.MessageType
 import org.jam.jmessenger.data.db.entity.RoomMessage
@@ -31,7 +28,11 @@ class FirebaseChatDatabaseSources {
         return firebaseDatabase.runBatch {
             for (message in messages) {
                 val firebaseMessage = createUserMessage(message.sender, message.receiver, message.text.toString())
-                it.set(getRefrence(message.receiver), (hashMapOf(firebaseMessage.mid to firebaseMessage) as Map<String, Any>), SetOptions.merge())
+                it.set(
+                    getRefrence(message.receiver),
+                    (hashMapOf(firebaseMessage.mid to firebaseMessage) as Map<String, Any>),
+                    SetOptions.merge()
+                )
             }
             return@runBatch
         }
@@ -41,11 +42,14 @@ class FirebaseChatDatabaseSources {
 
 
     // Loader Functions ----------------------------------------------------------------------------
-    fun getPendingMessage(senderUID: String) {}
-
+    fun getPendingMessage(userUID: String): Task<DocumentSnapshot> {
+        return getRefrence(userUID).get()
+    }
 
     // Delete Functions ----------------------------------------------------------------------------
-
+    fun clearChatsPendingQueue(userUID: String): Task<Void> {
+        return getRefrence(userUID).delete()
+    }
 
     // Misc Functions ------------------------------------------------------------------------------
     fun createUserMessage(senderUID: String, receiverUID: String, contents: String): Message {

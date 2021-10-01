@@ -3,9 +3,7 @@ package org.jam.jmessenger.data.db.remote
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.data.db.entity.FriendState
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.entity.UserFriend
@@ -30,8 +28,7 @@ class FirebaseDatabaseSource {
      * @return: Task<QuerySnapshot>
      */
     fun searchFriendEmail(email: String): Task<QuerySnapshot> {
-        val query = firebaseDatabase.collection("users").whereEqualTo("info.email", email).limit(1)
-        return query.get()
+        return getUserCollection().whereEqualTo("info.email", email).limit(1).get()
     }
     // END REGION
 
@@ -44,9 +41,7 @@ class FirebaseDatabaseSource {
      * @param uid: String - Users Uid
      * @return: DocumentReference
      */
-    fun onUserDataChangeListener(uid: String): DocumentReference {
-        return firebaseDatabase.collection("users").document(uid)
-    }
+    fun onUserDataChangeListener(uid: String): DocumentReference = getUserDocument(uid)
     // END REGION
 
 
@@ -57,9 +52,7 @@ class FirebaseDatabaseSource {
      * @param user: User - Adds a new user document to the DB
      * @return: Task<Void>
      */
-    fun createNewUser(user: User): Task<Void> {
-        return firebaseDatabase.collection("users").document(user.info.uid).set(user)
-    }
+    fun createNewUser(user: User): Task<Void> = getUserDocument(user.info.uid).set(user)
     // END REGION
 
 
@@ -77,10 +70,8 @@ class FirebaseDatabaseSource {
 
         // Update Outgoing request to the friends
         return Tasks.whenAll(
-            firebaseDatabase.collection("users").document(userRequest.uid)
-            .update("friends.${friendRequest.uid}", friendRequest),
-            firebaseDatabase.collection("users").document(friendRequest.uid)
-            .update("friends.${userRequest.uid}", userRequest)
+            getUserDocument(userRequest.uid).update("friends.${friendRequest.uid}", friendRequest),
+            getUserDocument(friendRequest.uid).update("friends.${userRequest.uid}", userRequest)
         )
     }
 
@@ -97,10 +88,8 @@ class FirebaseDatabaseSource {
 
         // Update Outgoing request to the friends
         return Tasks.whenAll(
-            firebaseDatabase.collection("users").document(userRequest.uid)
-            .update("friends.${friendRequest.uid}", friendRequest),
-            firebaseDatabase.collection("users").document(friendRequest.uid)
-            .update("friends.${userRequest.uid}", userRequest)
+            getUserDocument(userRequest.uid).update("friends.${friendRequest.uid}", friendRequest),
+            getUserDocument(friendRequest.uid).update("friends.${userRequest.uid}", userRequest)
         )
     }
 
@@ -117,11 +106,13 @@ class FirebaseDatabaseSource {
 
         // Update Outgoing request to the friends
         return Tasks.whenAll(
-            firebaseDatabase.collection("users").document(userRequest.uid)
-                .update("friends.${friendRequest.uid}", friendRequest),
-            firebaseDatabase.collection("users").document(friendRequest.uid)
-                .update("friends.${userRequest.uid}", userRequest)
+            getUserDocument(userRequest.uid).update("friends.${friendRequest.uid}", friendRequest),
+            getUserDocument(friendRequest.uid).update("friends.${userRequest.uid}", userRequest)
         )
+    }
+
+    fun muteFriend(user: User, friend: User, mute: Boolean = true): Task<Void> {
+        return getUserCollection().document(user.info.uid).update("friends.${friend.info.uid}.isMute", mute)
     }
 
     /**
@@ -131,14 +122,13 @@ class FirebaseDatabaseSource {
      * @param friend: User - user Friend entity
      * @return: Task<Void>
      */
+
     fun acceptFriend(user: User, friend: User): Task<Void> {
         val friendRequest = UserFriend(friend.info.uid, friend.info.name, FriendState.FRIEND, friend.info.profileuri)
         val userRequest = UserFriend(user.info.uid, user.info.name, FriendState.FRIEND, user.info.profileuri)
         return Tasks.whenAll(
-            firebaseDatabase.collection("users").document(userRequest.uid)
-            .update("friends.${friendRequest.uid}", friendRequest),
-            firebaseDatabase.collection("users").document(friendRequest.uid)
-            .update("friends.${userRequest.uid}", userRequest)
+            getUserDocument(userRequest.uid).update("friends.${friendRequest.uid}", friendRequest),
+            getUserDocument(friendRequest.uid).update("friends.${userRequest.uid}", userRequest)
         )
     }
 
@@ -152,7 +142,7 @@ class FirebaseDatabaseSource {
     fun rejectFriend(user: User, friend: User): Task<Void> {
         return Tasks.whenAll(
             // deletes the friend entity from user
-            firebaseDatabase.collection("users").document(user.info.uid).update(
+            getUserDocument(user.info.uid).update(
                 hashMapOf<String, Any>(
                     "friends.${friend.info.uid}.uid" to FieldValue.delete(),
                     "friends.${friend.info.uid}.name" to FieldValue.delete(),
@@ -161,7 +151,7 @@ class FirebaseDatabaseSource {
                 )
             ),
             // deletes the user entity from friend
-            firebaseDatabase.collection("users").document(friend.info.uid).update(
+            getUserDocument(friend.info.uid).update(
                 hashMapOf<String, Any>(
                     "friends.${user.info.uid}.uid" to FieldValue.delete(),
                     "friends.${user.info.uid}.name" to FieldValue.delete(),
@@ -178,9 +168,7 @@ class FirebaseDatabaseSource {
      * @param user: User - user entity with updated data
      * @return: Task<Void>
      */
-    fun updateUserData(user: User): Task<Void> {
-        return firebaseDatabase.collection("users").document(user.info.uid).set(user)
-    }
+    fun updateUserData(user: User): Task<Void> = getUserDocument(user.info.uid).set(user)
 
     /**
      * Update user last seen
@@ -189,22 +177,22 @@ class FirebaseDatabaseSource {
      * @return
      */
     fun updateUserLastSeen(uid: String): Task<DocumentSnapshot> {
-        return firebaseDatabase.collection("users").document(uid).get().addOnSuccessListener { doc ->
+        return getUserDocument(uid).get().addOnSuccessListener { doc ->
             val user = doc.toObject<User>()
             if (user != null) {
                 user.info.last_seen = null
                 user.info.isOnline = false
-                firebaseDatabase.collection("users").document(user.info.uid).set(user)
+                getUserDocument(user.info.uid).set(user)
             }
         }
     }
 
     fun updateUserOnlineStatus(uid: String, isonline: Boolean): Task<DocumentSnapshot> {
-        return firebaseDatabase.collection("users").document(uid).get().addOnSuccessListener { doc ->
+        return getUserDocument(uid).get().addOnSuccessListener { doc ->
             val user = doc.toObject<User>()
             if (user != null) {
                 user.info.isOnline = isonline
-                firebaseDatabase.collection("users").document(user.info.uid).set(user)
+                getUserDocument(user.info.uid).set(user)
             }
         }
     }
@@ -218,9 +206,7 @@ class FirebaseDatabaseSource {
      * @param uid: user uid to load data for
      * @return: Task<DocumentSnapshot>
      */
-    fun loadUser(uid: String): Task<DocumentSnapshot> {
-        return firebaseDatabase.collection("users").document(uid).get()
-    }
+    fun loadUser(uid: String): Task<DocumentSnapshot> = getUserDocument(uid).get()
 
     /**
      * Load user friends
@@ -228,9 +214,7 @@ class FirebaseDatabaseSource {
      * @param uid: user uid to load friends data for
      * @return: Task<DocumentSnapshot>
      */
-    fun loadUserFriends(uid: String): Task<DocumentSnapshot> {
-        return firebaseDatabase.collection("users").document(uid).get()
-    }
+    fun loadUserFriends(uid: String): Task<DocumentSnapshot> = getUserDocument(uid).get()
 
     // END REGION
 
@@ -243,14 +227,14 @@ class FirebaseDatabaseSource {
      * @return
      */
     fun deleteUser(uid: String): Task<Void> {
-        return firebaseDatabase.collection("users").document(uid).delete()
+        return getUserDocument(uid).delete()
     }
     // END REGION
 
 
     // Misc Functions ------------------------------------------------------------------------------
     /** TEST ONLY FUNCTION
-     * Use emulator
+     * Use emudlator
      *
      * @param host: host ip address
      * @param port: host port to connect to
@@ -258,5 +242,13 @@ class FirebaseDatabaseSource {
     fun useEmulator(host: String, port: Int) {
         firebaseDatabase.useEmulator(host, port)
         firebaseDatabase.clearPersistence()
+    }
+
+    private fun getUserCollection(): CollectionReference {
+        return firebaseDatabase.collection("users")
+    }
+
+    private fun getUserDocument(userUID: String): DocumentReference {
+        return firebaseDatabase.collection("users").document(userUID)
     }
 }

@@ -113,9 +113,11 @@ class HomeFragment : Fragment() {
         }.attach()
     }
 
-    override fun onDestroyView() {
-        authRepository.getValidUser()?.uid?.let {
-            databaseRepository.updateUserLastSeen(it)
+    override fun onDestroyView() { // TODO: LOGOUT BUG
+        if (authRepository.checkUserAvailable()) {
+            authRepository.getValidUser()?.uid?.let {
+                databaseRepository.updateUserLastSeen(it)
+            }
         }
         super.onDestroyView()
     }

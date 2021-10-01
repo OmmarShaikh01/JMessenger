@@ -34,9 +34,7 @@ data class UserInfo(
     @ServerTimestamp
     var last_seen: Timestamp? = null,
 ): Serializable {
-    override fun toString(): String {
-        return "${this.uid}: ${this.name}"
-    }
+    override fun toString(): String = "${this.uid}: ${this.name}"
 }
 
 

@@ -25,7 +25,7 @@
         android:background="@color/secondaryDarkColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/contactsItem_ImageView_Profile"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -43,16 +43,20 @@
         <TextView
             android:id="@+id/contactsItem_TextView_Name"
             style="@style/Text_Headline6"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/contactsItem_TextView_status"
             style="@style/Text_Subtitle2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom" />
+            android:ellipsize="end"
+            android:gravity="bottom"
+            android:maxLines="1" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

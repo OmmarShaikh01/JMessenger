@@ -1,11 +1,11 @@
 package org.jam.jmessenger.data.db.entity
 
-import com.google.common.io.ByteStreams.toByteArray
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 import java.io.Serializable
 import java.math.BigInteger
 import java.security.MessageDigest
+import com.google.firebase.firestore.*
 
 
 data class Message (
