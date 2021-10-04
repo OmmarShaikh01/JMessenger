@@ -6,6 +6,10 @@ import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.*
 import org.jam.jmessenger.data.db.remote.FirebaseChatDatabaseSources
 import org.jam.jmessenger.data.db.remote.FirebaseDatabaseSource
@@ -67,8 +71,11 @@ class ChatsRepository(
         return messageRoomDAO.readUnreadMessages()
     }
 
-    fun readConversation(senderUID: String, receiverUID: String): List<RoomMessage> {
-        return messageRoomDAO.readConversation(senderUID, receiverUID)
+    fun readConversation(senderUID: String, receiverUID: String, infix: ((Result<List<RoomMessage>>) -> Unit)) {
+        CoroutineScope(Dispatchers.IO).launch{
+            val messageList = messageRoomDAO.readConversation(senderUID, receiverUID)
+            infix.invoke(Result.Success(data = messageList))
+        }
     }
 
     fun receiveMessage(userUID: String): Task<DocumentSnapshot> {

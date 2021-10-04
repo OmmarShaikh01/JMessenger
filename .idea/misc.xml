@@ -13,10 +13,12 @@
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/jabmessenger_appicon.xml" value="0.2520833333333333" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/jmessenger_icon.xml" value="0.17777777777777778" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/text_view_badge_positive.xml" value="0.2515625" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/textedit_background_round.xml" value="0.2515625" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/uprofile_icon.xml" value="0.24166666666666667" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/drawable/uprofile_mask.xml" value="0.2520833333333333" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/add_friend_fragment.xml" value="0.2359375" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/layout/chat_fragment.xml" value="0.3484615384615385" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/chats_home_fragment.xml" value="0.3522550544323484" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/chats_recycler_view_item.xml" value="0.7131901840490797" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/contacts_home_fragment.xml" value="0.33" />
@@ -31,6 +33,7 @@
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/friend_search_fragment.xml" value="0.23541666666666666" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/groups_home_fragment.xml" value="0.2359375" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/home_fragment.xml" value="0.2359375" />
+        <entry key="..\:/dev/JMessenger/app/src/main/res/layout/message_recycler_view_item.xml" value="0.33" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/requests_recycler_view_item.xml" value="0.7110945644080418" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/sign_in_fragment.xml" value="0.23541666666666666" />
         <entry key="..\:/dev/JMessenger/app/src/main/res/layout/sign_up_fragment.xml" value="0.33" />

@@ -2,6 +2,8 @@ package org.jam.jmessenger.data.db.entity
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import androidx.room.*
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
@@ -11,6 +13,7 @@ import kotlinx.coroutines.launch
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.*
+import kotlin.random.Random
 
 @Entity(tableName = "messages")
 data class RoomMessage (
@@ -26,8 +29,9 @@ data class RoomMessage (
         mid = hashString()
     }
 
-    private fun hashString(): String {
-        val input = "$sender$receiver$text"
+    fun hashString(): String {
+        val seed = Random(3).nextInt()
+        val input = "$sender$receiver$text$sendtime$seed"
         val bytes = MessageDigest
                 .getInstance("MD5")
                 .digest(input.toByteArray())
@@ -79,6 +83,9 @@ interface RoomMessageDAO {
     @Query("SELECT * FROM messages WHERE (sender IN (:senderUID, :receiverUID) AND receiver IN (:senderUID, :receiverUID)) ORDER BY sendtime DESC")
     fun readConversation(senderUID: String, receiverUID: String): List<RoomMessage>
 
+    @Query("SELECT * FROM messages WHERE (sender IN (:senderUID, :receiverUID) AND receiver IN (:senderUID, :receiverUID)) ORDER BY sendtime DESC LIMIT :limit")
+    fun readConversationPaged(senderUID: String, receiverUID: String, limit: Int): List<RoomMessage>
+
     @Delete(entity = RoomMessage::class)
     fun deleteMessage(message: RoomMessage): Int
 
@@ -87,5 +94,26 @@ interface RoomMessageDAO {
 
     fun asyncInsertAll(vararg message: RoomMessage) {
         CoroutineScope(Dispatchers.IO).launch { suspendInsertAll(*message) }
+    }
+}
+
+
+
+class ConversationPagingSource(
+    private val messageDAO: RoomMessageDAO,
+    private val userUID_1: String,
+    private val userUID_2: String
+): PagingSource<Int, RoomMessage>() {
+
+    private companion object {
+        const val INITIAL_PAGE_INDEX = 0
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RoomMessage> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, RoomMessage>): Int? {
+        TODO("Not yet implemented")
     }
 }

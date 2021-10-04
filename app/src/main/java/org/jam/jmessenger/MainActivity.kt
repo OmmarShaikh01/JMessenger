@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         //TODO: testing connects to emulator
         try {
             val mAuth = FirebaseAuth.getInstance()
-            // mAuth.signOut()
+            mAuth.signOut()
             mAuth.useEmulator("10.0.2.2", 9099)
 
             val mFirestore = FirebaseFirestore.getInstance()

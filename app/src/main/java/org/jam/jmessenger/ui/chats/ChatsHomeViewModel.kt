@@ -51,7 +51,7 @@ class ChatsHomeViewModel(private val context: WeakReference<Context>, private va
         database_repository.loadUser(uid) { result ->
             run {
                 if (result is Result.Success) result.data.let { user -> _userInfo.value = user }
-                else { throw ExceptionInInitializerError()}
+                else { throw ExceptionInInitializerError() }
             }
         }
     }
@@ -86,6 +86,7 @@ class ChatsHomeViewModel(private val context: WeakReference<Context>, private va
             Toast.makeText(context.get()!!, "Operation Failed.", Toast.LENGTH_SHORT).show()
         }
     }
+
     fun blockUser(friend: UserFriend) {
         val userfriend = User(UserInfo(uid = friend.uid, name = friend.name))
         val user = userInfo.value ?: return
@@ -96,6 +97,7 @@ class ChatsHomeViewModel(private val context: WeakReference<Context>, private va
             Toast.makeText(context.get()!!, "Operation Failed.", Toast.LENGTH_SHORT).show()
         }
     }
+
     fun unfriendUser(friend: UserFriend) {
         val userfriend = User(UserInfo(uid = friend.uid, name = friend.name))
         val user = userInfo.value ?: return
