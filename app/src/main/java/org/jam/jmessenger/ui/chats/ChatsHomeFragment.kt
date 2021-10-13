@@ -10,7 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.room.Room
+import com.google.firebase.firestore.MetadataChanges
+import com.google.firebase.firestore.ktx.toObject
 import org.jam.jmessenger.R
+import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.RoomMessage
 import org.jam.jmessenger.data.db.entity.RoomUser
 import org.jam.jmessenger.data.db.entity.User
@@ -39,9 +42,15 @@ class ChatsHomeFragment: Fragment(), View.OnClickListener {
     }
 
     private fun observeViewModel() {
-        viewModel.userInfo.observe(this.viewLifecycleOwner, { data: User ->
+        viewModel.unreadCount.addSnapshotListener(MetadataChanges.EXCLUDE){ snap, e ->
+            if (e != null) {
+                return@addSnapshotListener
+            }
+            if (snap != null && snap.exists()) {
+                viewModel.receiveMessages()
+            }
+        }
 
-        })
         viewModel.userList.observe(this.viewLifecycleOwner, { data ->
             val dataHashMap = HashMap<String, RoomUser>()
             data.forEach {

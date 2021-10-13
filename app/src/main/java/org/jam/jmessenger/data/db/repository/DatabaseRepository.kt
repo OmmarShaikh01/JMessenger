@@ -1,6 +1,7 @@
 package org.jam.jmessenger.data.db.repository
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.ktx.toObject
@@ -165,6 +166,10 @@ class DatabaseRepository {
 
     fun updateUserOnlineStatus(uid: String, isonline: Boolean): Task<DocumentSnapshot> {
         return firebaseDatabaseService.updateUserOnlineStatus(uid, isonline)
+    }
+
+    fun getFriendList(uid: String): DocumentReference {
+        return firebaseDatabaseService.getFriendListRef(uid)
     }
     // END REGION
 

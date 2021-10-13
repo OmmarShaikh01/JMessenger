@@ -4,15 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/message_ConstLayout"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
     android:layout_margin="4dp">
 
     <TextView
         android:id="@+id/message_FriendChat"
         android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/textedit_background_round"
         android:gravity="center_vertical"
+        android:maxLines="12"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:text="Message"
         android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,16 +23,19 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:paddingLeft="4dp" />
+        tools:paddingLeft="12dp" />
 
     <TextView
         android:id="@+id/message_UserChat"
         android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/textedit_background_round"
         android:backgroundTint="@color/primaryColor"
         android:gravity="center_vertical"
-        android:paddingRight="4dp"
+        android:maxLines="12"
+        android:paddingTop="8dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="8dp"
         android:text="Message"
         android:textAlignment="viewEnd"
         app:layout_constraintBottom_toBottomOf="parent"

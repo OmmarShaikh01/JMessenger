@@ -6,7 +6,7 @@ import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class AuthenticationRepository(private val validateUser: Boolean = true) { // TODO: NEEDS TO BE PUT IN VIEW MODELS
+class AuthenticationRepository(private val validateUser: Boolean = true) {
     private val authenticator = FirebaseAuth.getInstance()
     val currentUser: FirebaseUser?
         get() = getValidUser()

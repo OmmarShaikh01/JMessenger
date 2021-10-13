@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.CoroutineScope
@@ -27,8 +28,8 @@ class ChatsRepository(
     private val roomChatsSource = RoomChatDatabaseSources.getDatabase(context, type) ?:
         throw Exception("Room Failed to Initialize")
 
-    private val userRoomDAO = roomChatsSource.userDAO()!!
-    private val messageRoomDAO = roomChatsSource.messageDao()!!
+    val userRoomDAO = roomChatsSource.userDAO()!!
+    val messageRoomDAO = roomChatsSource.messageDao()!!
 
 
     // Create Functions ----------------------------------------------------------------------------
@@ -63,6 +64,10 @@ class ChatsRepository(
 
 
     // Read Functions ------------------------------------------------------------------------------
+    fun getFireBaseUnreadChats(uid: String): DocumentReference {
+        return firebaseChatsSource.getRefrence(uid)
+    }
+
     fun readMessages(senderUID: String, receiverUID: String, state: MessageState = MessageState.UNREAD): List<RoomMessage> {
         return messageRoomDAO.readUnreadMessages(senderUID, receiverUID, state)
     }
@@ -74,6 +79,7 @@ class ChatsRepository(
     fun readConversation(senderUID: String, receiverUID: String, infix: ((Result<List<RoomMessage>>) -> Unit)) {
         CoroutineScope(Dispatchers.IO).launch{
             val messageList = messageRoomDAO.readConversation(senderUID, receiverUID)
+            messageRoomDAO.updateReadState(senderUID, receiverUID)
             infix.invoke(Result.Success(data = messageList))
         }
     }
@@ -96,13 +102,17 @@ class ChatsRepository(
             if (messageList.isNotEmpty()) {
                 messageRoomDAO.asyncInsertAll(*messageList.toTypedArray())
                 // TODO: ENABLE IN PRODUCTION
-                // firebaseChatsSource.clearChatsPendingQueue(userUID)
+                firebaseChatsSource.clearChatsPendingQueue(userUID)
             }
         }
     }
 
     fun getUnreadCount(senderUID: String, receiverUID: String): Int {
         return messageRoomDAO.getUnreadCount(senderUID, receiverUID)
+    }
+
+    fun getAllUnreadCount(): LiveData<Int> {
+        return messageRoomDAO.getAllUnreadCount()
     }
 
     fun getConversationList(): LiveData<List<RoomUser>> {

@@ -4,13 +4,15 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.lifecycle.*
-import androidx.room.Room
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import com.squareup.okhttp.Dispatcher
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.RoomMessage
@@ -34,7 +36,6 @@ class ChatViewModelFactory(
 }
 
 
-
 class ChatViewModel(
     private val context: WeakReference<Context>,
     private var userUID: String,
@@ -51,17 +52,22 @@ class ChatViewModel(
     var userInfo: LiveData<User> = _userInfo
     private var _friendInfo = MutableLiveData<User>()
     var friendInfo: LiveData<User> = _friendInfo
-    private var _messages = MutableLiveData<List<RoomMessage>>()
-    var messages: LiveData<List<RoomMessage>> = _messages
 
-    fun readMessages(senderUID: String, receiverUID: String) {
-        chats_repository.readConversation(senderUID, receiverUID) { result ->
-            run {
-                if (result is Result.Success) result.data.let {
-                        message -> _messages.postValue(message)
-                }
-            }
+    fun readMessages(senderUID: String, receiverUID: String): Flow<PagingData<RoomMessage>> {
+        updateReadCount(senderUID, receiverUID)
+        return Pager(PagingConfig(pageSize = 10, maxSize = 20, prefetchDistance = 5)) {
+            chats_repository.messageRoomDAO.readConversationPaged(userUID, friendUID)
+        }.flow.cachedIn(viewModelScope)
+    }
+
+    fun updateReadCount(senderUID: String, receiverUID: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            chats_repository.messageRoomDAO.updateReadState(senderUID, receiverUID)
         }
+    }
+
+    fun sendMessages(senderUID: String, receiverUID: String, content: String) {
+        chats_repository.sendMessage(senderUID, receiverUID, content)
     }
 
     fun loadUser(uid: String) {
@@ -96,14 +102,5 @@ class ChatViewModel(
                 }
             }
         }
-    }
-
-    fun emulateMessage(sender: String, receiver: String, count: Int): List<RoomMessage> {
-        val list = mutableListOf<RoomMessage>()
-        for (index in 0..count){
-            list.add(chats_repository.createUserMessage(sender, receiver, "HELLO WORLD $index"))
-            list.add(chats_repository.createUserMessage(receiver, sender, "HELLO WORLD $index"))
-        }
-        return list.toList()
     }
 }

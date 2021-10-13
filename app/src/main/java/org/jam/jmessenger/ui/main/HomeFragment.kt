@@ -5,18 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import org.jam.jmessenger.R
+import org.jam.jmessenger.data.db.Result
+import org.jam.jmessenger.data.db.entity.RoomUser
+import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.repository.AuthenticationRepository
 import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.databinding.HomeFragmentBinding
 import org.jam.jmessenger.ui.chats.ChatsHomeFragment
+import org.jam.jmessenger.ui.chats.ChatsHomeViewModel
+import org.jam.jmessenger.ui.chats.ChatsHomeViewModelFactory
 import org.jam.jmessenger.ui.contacts.ContactsHomeFragment
 import org.jam.jmessenger.ui.groups.GroupsHomeFragment
+import java.lang.ref.WeakReference
 
 
 /**
@@ -28,9 +38,43 @@ class HomeFragment : Fragment() {
     private lateinit var bindings: HomeFragmentBinding
     private lateinit var navController: NavController
     private lateinit var viewpager: ViewPager2
+    private lateinit var viewModel: HomeViewModel
     private var TAG = "HomeFragment"
-    private var databaseRepository = DatabaseRepository()
+
     private var authRepository = AuthenticationRepository()
+
+
+    // START REGION: ViewModel Related Methods
+    private fun initViewModel() {
+        // Declaring Fragment ViewModel
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            HomeViewModelFactory(Firebase.auth.currentUser!!.uid, WeakReference(requireContext()))
+        ).get(HomeViewModel::class.java)
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.unreadCount.observe(this.viewLifecycleOwner, { data: Int ->
+            viewModel.notifyNewMessage(data)
+        })
+        viewModel.friendList.addSnapshotListener { snap, error ->
+            if (error != null) {
+                return@addSnapshotListener
+            }
+            if (snap != null && snap.exists()) {
+                val user = snap.toObject<User>()
+                if (user != null) {
+                    if (snap.metadata.hasPendingWrites()) {
+                        viewModel.notifyIncommingFriendRequest(user.friends) // Local Loader
+                    } else {
+                        viewModel.notifyIncommingFriendRequest(user.friends) // Server Loader
+                    }
+                }
+            }
+        }
+    }
+    // END REGION
 
     /**
      * Sets tool bar option menu and implements the listener for item click events
@@ -48,9 +92,10 @@ class HomeFragment : Fragment() {
                     menuclick = true
                     navController.navigate(HomeFragmentDirections.actionHomeFragmentToNavUserAuth())
                     authRepository.getValidUser()?.uid?.let {
-                        databaseRepository.updateUserLastSeen(it)
+                        viewModel.databaseRepository.updateUserLastSeen(it)
                     }
                     authRepository.signout()
+                    viewModelStore.clear()
                 }
                 "Settings" -> {
                     menuclick = true
@@ -79,10 +124,11 @@ class HomeFragment : Fragment() {
     ): View? {
         bindings = HomeFragmentBinding.inflate(inflater)
         viewpager = bindings.homeViewPager2
-
+        initViewModel()
         authRepository.getValidUser()?.uid?.let {
-            databaseRepository.updateUserOnlineStatus(it, true)
+            viewModel.databaseRepository.updateUserOnlineStatus(it, true)
         }
+
         // Sets main homepage action menu
         setToolBarOptionMenu()
         return bindings.root
@@ -114,11 +160,6 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() { // TODO: LOGOUT BUG
-        if (authRepository.checkUserAvailable()) {
-            authRepository.getValidUser()?.uid?.let {
-                databaseRepository.updateUserLastSeen(it)
-            }
-        }
         super.onDestroyView()
     }
 }

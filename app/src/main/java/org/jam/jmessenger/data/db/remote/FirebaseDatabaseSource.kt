@@ -216,6 +216,9 @@ class FirebaseDatabaseSource {
      */
     fun loadUserFriends(uid: String): Task<DocumentSnapshot> = getUserDocument(uid).get()
 
+    fun getFriendListRef(userUID: String): DocumentReference {
+        return firebaseDatabase.collection("users").document(userUID)
+    }
     // END REGION
 
     
@@ -229,6 +232,8 @@ class FirebaseDatabaseSource {
     fun deleteUser(uid: String): Task<Void> {
         return getUserDocument(uid).delete()
     }
+
+
     // END REGION
 
 

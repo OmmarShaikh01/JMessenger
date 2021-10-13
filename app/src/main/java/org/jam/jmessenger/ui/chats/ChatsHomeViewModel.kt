@@ -30,7 +30,7 @@ class ChatsHomeViewModelFactory(
     }
 }
 
-class ChatsHomeViewModel(private val context: WeakReference<Context>, private val uid: String) : ViewModel() {
+class ChatsHomeViewModel(private val context: WeakReference<Context>, val uid: String) : ViewModel() {
 
     private val TAG = "ChatsHomeViewModel"
     private val database_repository = DatabaseRepository()
@@ -42,12 +42,14 @@ class ChatsHomeViewModel(private val context: WeakReference<Context>, private va
     var userInfo: LiveData<User> = _userInfo
     var conversationList = chats_repository.getConversationList()
     var userList = chats_repository.getUserList(excludeUID = uid)
+    var unreadCount = chats_repository.getFireBaseUnreadChats(uid)
+
     init {
         chats_repository.receiveMessage(uid)
         updateUserData()
     }
 
-    private fun updateUserData() {
+    fun updateUserData() {
         database_repository.loadUser(uid) { result ->
             run {
                 if (result is Result.Success) result.data.let { user -> _userInfo.value = user }
@@ -60,8 +62,12 @@ class ChatsHomeViewModel(private val context: WeakReference<Context>, private va
         return chats_repository.getRecentMessage(userUID, uid)
     }
 
+    fun receiveMessages(){
+        chats_repository.receiveMessage(uid)
+    }
+
     fun getUnreadCount(userUID: String): Int {
-        return chats_repository.getUnreadCount(userUID, uid)
+        return chats_repository.getUnreadCount(uid, userUID)
     }
 
     fun loadUserFriendInfo(userUID: String, name: TextView) {

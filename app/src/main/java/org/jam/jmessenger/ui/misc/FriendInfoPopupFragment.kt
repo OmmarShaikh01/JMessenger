@@ -15,6 +15,7 @@ import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.entity.UserFriend
 import org.jam.jmessenger.databinding.FragmentFriendInfoPopupBinding
 import org.jam.jmessenger.ui.contacts.ContactsHomeViewModel
+import org.jam.jmessenger.ui.main.HomeFragmentDirections
 import org.jam.jmessenger.widgets.ProfileRoundImageView
 import java.lang.ref.WeakReference
 
@@ -28,9 +29,13 @@ class FriendInfoPopupFragment(
     var userFriend: UserFriend = UserFriend()
 
     private fun chatNavigate() {
-        parentNavController.get()?.backQueue.toString()
-        dismiss()
-        TODO("NOT YET IMPLEMENTED")
+        val user = parentViewModel.get()?.userInfo?.value?.info?.uid
+        if (userFriend.uid.isNotEmpty() && user != null) {
+            parentNavController.get()?.navigate(
+                HomeFragmentDirections.actionHomeFragmentToChatFragment(user, userFriend.uid)
+            )
+            dismiss()
+        }
     }
 
     private fun blockUser(userFriend: UserFriend) {

@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
+
+//TODO: UPDATE ON EACH NEW MESAGE, and update on events
 class ChatsRecyclerViewAdapter(
     private var userConversationList: HashMap<String, RoomUser>,
     private val parentViewModel: ChatsHomeViewModel,
@@ -52,7 +55,7 @@ class ChatsRecyclerViewAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chats_recycler_view_item, parent, false)
         popupFragmentManager = (view.context as AppCompatActivity).supportFragmentManager
         popupFragment = FriendChatInfoPopupFragment(WeakReference(parentNavController), WeakReference(parentViewModel))
-        userUID = parentViewModel.userInfo.value?.info?.uid
+        userUID = parentViewModel.uid
         return ChatsViewHolder(view)
     }
 

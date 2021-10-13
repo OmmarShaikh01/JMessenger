@@ -70,7 +70,7 @@ class FirebaseChatDatabaseSources {
         )
     }
 
-    private fun getRefrence(uid: String): DocumentReference {
+    fun getRefrence(uid: String): DocumentReference {
         return firebaseDatabase.collection("users").document(uid).collection("chats").document("users")
     }
 
