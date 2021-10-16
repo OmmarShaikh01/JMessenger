@@ -10,10 +10,9 @@ import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.*
+import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.remote.FirebaseChatDatabaseSources
-import org.jam.jmessenger.data.db.remote.FirebaseDatabaseSource
 import org.jam.jmessenger.data.db.room.RoomChatDatabaseSources
 import java.util.*
 import org.jam.jmessenger.data.db.room.RoomChatDatabaseSources.RoomChatDatabaseType as aliasRoomChatDatabaseType
@@ -25,7 +24,7 @@ class ChatsRepository(
 ) {
     private val TAG = "ChatsRepository"
     private val firebaseChatsSource = FirebaseChatDatabaseSources()
-    private val roomChatsSource = RoomChatDatabaseSources.getDatabase(context, type) ?:
+    val roomChatsSource = RoomChatDatabaseSources.getDatabase(context, type) ?:
         throw Exception("Room Failed to Initialize")
 
     val userRoomDAO = roomChatsSource.userDAO()!!
@@ -129,6 +128,34 @@ class ChatsRepository(
 
     fun getRecentMessage(userUID_1: String, userUID_2: String): RoomMessage {
         return messageRoomDAO.getMostRecentMessage(userUID_1, userUID_2)
+    }
+
+    fun addOnChatChangedListener(uid: String) {
+        firebaseChatsSource.getRefrence(uid).addSnapshotListener { doc, error ->
+            if (error != null) return@addSnapshotListener
+
+            val messageList = mutableListOf<RoomMessage>()
+            if (doc != null) {
+                doc.data?.entries?.forEach { item ->
+                    val value = (item.value as HashMap<*, *>)
+                    if (value.size == 6) {
+                        value.let {
+                            val message = createUserMessage(it["sender"] as String,
+                                it["receiver"] as String,
+                                it["text"] as String)
+                            message.msgState = MessageState.UNREAD
+                            messageList.add(message)
+                        }
+                    }
+                }
+
+                if (messageList.isNotEmpty()) {
+                    messageRoomDAO.asyncInsertAll(*messageList.toTypedArray())
+                    // TODO: ENABLE IN PRODUCTION
+                    firebaseChatsSource.clearChatsPendingQueue(uid)
+                }
+            }
+        }
     }
 
     // Delete Functions ----------------------------------------------------------------------------

@@ -18,11 +18,17 @@ import androidx.navigation.Navigation
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.repository.AuthenticationRepository
+import org.jam.jmessenger.data.db.repository.ChatsRepository
 import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.databinding.SignUpFragmentBinding
 import org.jam.jmessenger.ui.hideKeyboard
+import org.jam.jmessenger.ui.unregisterUser
 
 
 /**
@@ -87,6 +93,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         // Sign in success, update UI with the signed-in user's information
         Toast.makeText(requireContext(), "Authentication Successful.", Toast.LENGTH_SHORT).show()
         navController.navigate(SignUpFragmentDirections.actionSignUpFragmentToHomeFragment())
+        unregisterUser()
     }
 
     private fun onFailureHandlerSignUp(exception: Exception) {

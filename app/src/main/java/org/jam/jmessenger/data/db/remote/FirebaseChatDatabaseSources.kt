@@ -2,10 +2,12 @@ package org.jam.jmessenger.data.db.remote
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.ktx.toObject
 import org.jam.jmessenger.data.db.entity.Message
 import org.jam.jmessenger.data.db.entity.MessageType
 import org.jam.jmessenger.data.db.entity.RoomMessage
 import java.util.*
+import kotlin.collections.HashMap
 
 class FirebaseChatDatabaseSources {
     private val TAG = "ChatDatabaseSources"

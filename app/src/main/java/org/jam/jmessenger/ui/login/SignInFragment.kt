@@ -19,9 +19,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jam.jmessenger.data.db.repository.AuthenticationRepository
+import org.jam.jmessenger.data.db.repository.ChatsRepository
 import org.jam.jmessenger.databinding.SignInFragmentBinding
 import org.jam.jmessenger.ui.hideKeyboard
+import org.jam.jmessenger.ui.unregisterUser
 
 
 /**
@@ -71,6 +76,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
                 .addOnSuccessListener(requireActivity()) {
                     Toast.makeText(requireContext(), "Authentication Successful", Toast.LENGTH_SHORT).show()
                     navController.navigate(SignInFragmentDirections.actionSignInFragmentToHomeFragment())
+                    unregisterUser()
                 }. addOnFailureListener() { exception ->
                     onUserSigningFailure(exception)
                 }

@@ -14,11 +14,15 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jam.jmessenger.R
 import org.jam.jmessenger.data.db.Result
 import org.jam.jmessenger.data.db.entity.RoomUser
 import org.jam.jmessenger.data.db.entity.User
 import org.jam.jmessenger.data.db.repository.AuthenticationRepository
+import org.jam.jmessenger.data.db.repository.ChatsRepository
 import org.jam.jmessenger.data.db.repository.DatabaseRepository
 import org.jam.jmessenger.databinding.HomeFragmentBinding
 import org.jam.jmessenger.ui.chats.ChatsHomeFragment
@@ -26,6 +30,7 @@ import org.jam.jmessenger.ui.chats.ChatsHomeViewModel
 import org.jam.jmessenger.ui.chats.ChatsHomeViewModelFactory
 import org.jam.jmessenger.ui.contacts.ContactsHomeFragment
 import org.jam.jmessenger.ui.groups.GroupsHomeFragment
+import org.jam.jmessenger.ui.unregisterUser
 import java.lang.ref.WeakReference
 
 
@@ -58,21 +63,6 @@ class HomeFragment : Fragment() {
         viewModel.unreadCount.observe(this.viewLifecycleOwner, { data: Int ->
             viewModel.notifyNewMessage(data)
         })
-        viewModel.friendList.addSnapshotListener { snap, error ->
-            if (error != null) {
-                return@addSnapshotListener
-            }
-            if (snap != null && snap.exists()) {
-                val user = snap.toObject<User>()
-                if (user != null) {
-                    if (snap.metadata.hasPendingWrites()) {
-                        viewModel.notifyIncommingFriendRequest(user.friends) // Local Loader
-                    } else {
-                        viewModel.notifyIncommingFriendRequest(user.friends) // Server Loader
-                    }
-                }
-            }
-        }
     }
     // END REGION
 
@@ -95,7 +85,7 @@ class HomeFragment : Fragment() {
                         viewModel.databaseRepository.updateUserLastSeen(it)
                     }
                     authRepository.signout()
-                    viewModelStore.clear()
+                    unregisterUser()
                 }
                 "Settings" -> {
                     menuclick = true

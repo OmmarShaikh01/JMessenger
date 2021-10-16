@@ -39,6 +39,11 @@ class HomeViewModel(
     val unreadCount = chatsRepository.getAllUnreadCount()
     val friendList = databaseRepository.getFriendList(uid)
 
+    init {
+        chatsRepository.receiveMessage(uid)
+        chatsRepository.addOnChatChangedListener(uid)
+    }
+
     override fun onCleared() {
         if (authRepository.checkUserAvailable()) {
             authRepository.getValidUser()?.uid?.let {

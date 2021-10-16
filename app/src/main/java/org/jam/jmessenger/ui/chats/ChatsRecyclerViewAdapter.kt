@@ -61,14 +61,17 @@ class ChatsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ChatsRecyclerViewAdapter.ChatsViewHolder, position: Int) {
         val data = userConversationList[userConversationList.keys.elementAt(position)]
+        val weakHolder = WeakReference(holder)
         if (data != null) {
-            val weakHolder = WeakReference(holder)
             holder.userFriend = UserFriend(data.user)
             CoroutineScope(Dispatchers.IO).launch {
-                val recentMessage = parentViewModel.getRecentMessage(data.user)
-                val unreadMessages = parentViewModel.getUnreadCount(data.user)
+                val recentMessage = parentViewModel.getRecentMessage(data.user) ?: return@launch
+                val unreadMessages = parentViewModel.getUnreadCount(data.user) ?: return@launch
                 MainScope().launch {
-                    populateUI(weakHolder.get()!!, data, recentMessage, unreadMessages)
+                    val holder1 = weakHolder.get()
+                    if (holder1 != null) {
+                        populateUI(holder1, data, recentMessage, unreadMessages)
+                    }
                 }
             }.start()
             holder.imageviewMute.visibility = View.INVISIBLE

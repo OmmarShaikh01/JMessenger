@@ -55,7 +55,7 @@ class ChatViewModel(
 
     fun readMessages(senderUID: String, receiverUID: String): Flow<PagingData<RoomMessage>> {
         updateReadCount(senderUID, receiverUID)
-        return Pager(PagingConfig(pageSize = 10, maxSize = 20, prefetchDistance = 5)) {
+        return Pager(PagingConfig(pageSize = 10, maxSize = 100, prefetchDistance = 25)) {
             chats_repository.messageRoomDAO.readConversationPaged(userUID, friendUID)
         }.flow.cachedIn(viewModelScope)
     }
